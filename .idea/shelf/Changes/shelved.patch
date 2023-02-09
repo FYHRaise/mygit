@@ -1,0 +1,4458 @@
+Index: src/main/java/com/jxd/leave/model/Teacher.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Teacher.java b/src/main/java/com/jxd/leave/model/Teacher.java
+new file mode 100644
+--- /dev/null	(date 1674974015219)
++++ b/src/main/java/com/jxd/leave/model/Teacher.java	(date 1674974015219)
+@@ -0,0 +1,67 @@
++package com.jxd.leave.model;
++
++/**
++ * @ClassName Teacher
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/29
++ * @Version 1.0
++ */
++public class Teacher {
++    private Integer tid;
++    private String tname;
++    private String pwd;
++    private Integer cno;
++    private Integer role;
++
++    public Teacher() {
++    }
++
++    public Teacher(Integer tid, String tname, String pwd, Integer cno, Integer role) {
++        this.tid = tid;
++        this.tname = tname;
++        this.pwd = pwd;
++        this.cno = cno;
++        this.role = role;
++    }
++
++    public Integer getTid() {
++        return tid;
++    }
++
++    public void setTid(Integer tid) {
++        this.tid = tid;
++    }
++
++    public String getTname() {
++        return tname;
++    }
++
++    public void setTname(String tname) {
++        this.tname = tname;
++    }
++
++    public String getPwd() {
++        return pwd;
++    }
++
++    public void setPwd(String pwd) {
++        this.pwd = pwd;
++    }
++
++    public Integer getCno() {
++        return cno;
++    }
++
++    public void setCno(Integer cno) {
++        this.cno = cno;
++    }
++
++    public Integer getRole() {
++        return role;
++    }
++
++    public void setRole(Integer role) {
++        this.role = role;
++    }
++}
+Index: src/main/java/com/jxd/leave/dao/ITeacherDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/ITeacherDao.java b/src/main/java/com/jxd/leave/dao/ITeacherDao.java
+new file mode 100644
+--- /dev/null	(date 1675406830172)
++++ b/src/main/java/com/jxd/leave/dao/ITeacherDao.java	(date 1675406830172)
+@@ -0,0 +1,29 @@
++package com.jxd.leave.dao;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.Teacher;
++import org.apache.ibatis.annotations.Param;
++import org.springframework.web.bind.annotation.RequestBody;
++
++import java.util.List;
++
++public interface ITeacherDao {
++    IPage<Teacher> getAllTeacher(IPage<Teacher> page, @Param("tname") String tname, @Param("cno") int cno);
++
++    boolean addTeacher(Teacher teacher);
++
++    boolean updateTeacher(Teacher teacher);
++
++    boolean delTeacher(List<Integer> tids);
++
++    Integer selecrTid(Teacher teacher);
++
++    Integer selectCno(String tname);
++
++    List<Teacher> getTeacher(Teacher teacher);
++
++    boolean updTeacherPassword(Password password);
++    boolean resetTeacher(List<Integer> tids);
++
++}
+Index: src/main/java/com/jxd/leave/config/FilePathConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/config/FilePathConfig.java b/src/main/java/com/jxd/leave/config/FilePathConfig.java
+new file mode 100644
+--- /dev/null	(date 1675391357087)
++++ b/src/main/java/com/jxd/leave/config/FilePathConfig.java	(date 1675391357087)
+@@ -0,0 +1,30 @@
++package com.jxd.leave.config;
++
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.boot.system.ApplicationHome;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
++import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
++
++import java.io.File;
++
++@Configuration
++public class FilePathConfig implements WebMvcConfigurer {
++
++    @Value("${file.path}")
++    private String path;//映射路径
++
++    @Value("${file.address}")
++    private String address;//真实路径中文件夹名
++
++    @Override
++    public void addResourceHandlers(ResourceHandlerRegistry registry) {
++        //获取jar包所在目录
++        ApplicationHome h = new ApplicationHome(getClass());
++        File jarF = h.getSource();
++        //在jar包所在目录下生成一个upload文件夹用来存储上传的图片
++        String dirPath = jarF.getParentFile().toString()+ address;
++
++        registry.addResourceHandler(path).addResourceLocations("file:" + dirPath);
++    }
++}
+Index: src/main/java/com/jxd/leave/model/Leave.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Leave.java b/src/main/java/com/jxd/leave/model/Leave.java
+new file mode 100644
+--- /dev/null	(date 1674980534636)
++++ b/src/main/java/com/jxd/leave/model/Leave.java	(date 1674980534636)
+@@ -0,0 +1,37 @@
++package com.jxd.leave.model;
++
++/**
++ * @ClassName Leave
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/29
++ * @Version 1.0
++ */
++public class Leave {
++    private Integer lid;
++    private String lname;
++
++    public Leave() {
++    }
++
++    public Leave(Integer lid, String lname) {
++        this.lid = lid;
++        this.lname = lname;
++    }
++
++    public Integer getLid() {
++        return lid;
++    }
++
++    public void setLid(Integer lid) {
++        this.lid = lid;
++    }
++
++    public String getLname() {
++        return lname;
++    }
++
++    public void setLname(String lname) {
++        this.lname = lname;
++    }
++}
+Index: src/main/java/com/jxd/leave/dao/mapping/LeaveMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/LeaveMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/LeaveMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675150202369)
++++ b/src/main/java/com/jxd/leave/dao/mapping/LeaveMapper.xml	(date 1675150202369)
+@@ -0,0 +1,31 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.ILeaveDao">
++    <insert id="addLeave">
++        insert into leavetype (lname)
++        values (#{lname})
++    </insert>
++    <update id="updateLeave">
++        update leavetype set lname=#{lname}
++        where lid=#{lid}
++    </update>
++    <delete id="delLeave">
++        delete from leavetype where lid in
++        <foreach collection="lids" item="lids" open="(" separator="," close=")">
++            #{lids}
++        </foreach>
++    </delete>
++
++    <select id="getAllLeave" resultType="java.util.HashMap">
++        select lid,lname from leavetype
++        <where>
++            <if test="lname != '' and lname != null">
++                lname like '%' #{lname} '%'
++            </if>
++        </where>
++        order by lid
++    </select>
++    <select id="getAllLeaveType" resultType="leave">
++        select lid,lname from leavetype
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/dao/ILeaveDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/ILeaveDao.java b/src/main/java/com/jxd/leave/dao/ILeaveDao.java
+new file mode 100644
+--- /dev/null	(date 1675150202412)
++++ b/src/main/java/com/jxd/leave/dao/ILeaveDao.java	(date 1675150202412)
+@@ -0,0 +1,20 @@
++package com.jxd.leave.dao;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.jxd.leave.model.Class;
++import com.jxd.leave.model.Leave;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++
++public interface ILeaveDao {
++    List<Leave> getAllLeaveType();
++
++    IPage<Leave> getAllLeave(IPage<Leave> page, @Param("lname") String lname);
++
++    boolean addLeave(Leave leave);
++
++    boolean updateLeave(Leave leave);
++
++    boolean delLeave(List<Integer> lids);
++}
+Index: src/main/java/com/jxd/leave/service/ITeacherService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/ITeacherService.java b/src/main/java/com/jxd/leave/service/ITeacherService.java
+new file mode 100644
+--- /dev/null	(date 1675406830293)
++++ b/src/main/java/com/jxd/leave/service/ITeacherService.java	(date 1675406830293)
+@@ -0,0 +1,29 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.Teacher;
++import org.springframework.web.bind.annotation.RequestBody;
++
++import java.util.List;
++import java.util.Map;
++
++public interface ITeacherService {
++
++    Map<String, Object> getAllTeacher(Map<String,String> map);
++
++
++    boolean addTeacher(Teacher teacher);
++
++    boolean updateTeacher(Teacher teacher);
++
++    boolean delTeacher(List<Integer> tids);
++    Integer selecrTid(Teacher teacher);
++    Integer selectCno(String tname);
++
++    List<Teacher> getTeacher(Teacher teacher);
++
++    boolean updTeacherPassword(Password password);
++
++    boolean resetTeacher(List<Integer> tids);
++
++}
+Index: src/main/java/com/jxd/leave/dao/mapping/TeacherMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/TeacherMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/TeacherMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675498948871)
++++ b/src/main/java/com/jxd/leave/dao/mapping/TeacherMapper.xml	(date 1675498948871)
+@@ -0,0 +1,51 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.ITeacherDao">
++    <insert id="addTeacher">
++        insert into teacher (tname,pwd,role,cno)
++        values (#{tname},'888888',3,#{cno})
++    </insert>
++    <update id="updateTeacher">
++        update teacher set tname=#{tname},cno=#{cno}
++        where tid=#{tid}
++    </update>
++    <update id="updTeacherPassword">
++        update teacher set pwd=#{newPassword} where tid=#{id}
++    </update>
++    <update id="resetTeacher">
++        update teacher set pwd=888888 where tid in
++        <foreach collection="tids" item="tids" open="(" separator="," close=")">
++        #{tids}
++        </foreach>
++    </update>
++    <delete id="delTeacher">
++        delete from teacher where tid in
++        <foreach collection="tids" item="tids" open="(" separator="," close=")">
++            #{tids}
++        </foreach>
++    </delete>
++
++
++    <select id="getAllTeacher" resultType="java.util.HashMap">
++        select t.tid,t.tname,t.cno,cl.clname from teacher t
++        left join class cl on t.cno = cl.cno
++        <where>
++            <if test="tname != '' and tname != null">
++                tname like '%' #{tname} '%'
++            </if>
++            <if test="cno != 0">
++                and t.cno = #{cno}
++            </if>
++        </where>
++        order by tid
++    </select>
++    <select id="selecrTid" resultType="integer">
++        select tid from teacher where tname=#{tname}
++    </select>
++    <select id="selectCno" resultType="integer">
++        select cno from teacher where tname like '%' #{tname} '%'
++    </select>
++    <select id="getTeacher" resultType="teacher">
++        select tid,tname,pwd,cno from teacher where tname=#{tname}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/controller/TeacherController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/TeacherController.java b/src/main/java/com/jxd/leave/controller/TeacherController.java
+new file mode 100644
+--- /dev/null	(date 1675406830279)
++++ b/src/main/java/com/jxd/leave/controller/TeacherController.java	(date 1675406830279)
+@@ -0,0 +1,112 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.Teacher;
++import com.jxd.leave.model.User;
++import com.jxd.leave.service.ITeacherService;
++import com.jxd.leave.service.IUserService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.transaction.annotation.Transactional;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName TeacherController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/29
++ * @Version 1.0
++ */
++@RestController
++public class TeacherController {
++    @Autowired
++    private ITeacherService teacherService;
++    @Autowired
++    private IUserService userService;
++
++
++    @RequestMapping("/getTeacher")
++    public Map<String, Object> getTeacher(@RequestBody Map<String,String> map){
++        return teacherService.getAllTeacher(map);
++    }
++
++    @RequestMapping("/addTeacher")
++    @Transactional
++    public String addTeacher(@RequestBody Teacher teacher){
++        boolean flag = teacherService.addTeacher(teacher);
++        int peopleid = teacherService.selecrTid(teacher);
++        User user = new User(null,teacher.getTname(),teacher.getPwd(),2,peopleid);
++        boolean isSuccess = userService.addUser(user);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updateTeacher")
++    @Transactional
++    public String updateTeacher(@RequestBody Teacher teacher){
++        boolean flag = teacherService.updateTeacher(teacher);
++        User user = new User();
++        user.setUname(teacher.getTname());
++        user.setRole(2);
++        Integer id = teacherService.selecrTid(teacher);
++        user.setPeopleid(id);
++        boolean isSuccess = userService.updateUser(user);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/delTeacher")
++    @Transactional
++    public String delTeacher(@RequestBody List<Integer> tids){
++        boolean flag = teacherService.delTeacher(tids);
++        List<Integer> uids = tids;
++        boolean isSuccess = userService.delUser(uids,2);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/getTea")
++    public List<Teacher> getTeacher(@RequestBody Teacher teacher){
++        List<Teacher> list = teacherService.getTeacher(teacher);
++        return list;
++    }
++
++    @RequestMapping("/updTeacherPassword")
++    @Transactional
++    public String updTeacherPassword(@RequestBody Password password){
++        boolean flag = teacherService.updTeacherPassword(password);
++        password.setRole(2);
++        boolean isSuccess = userService.updPassword(password);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/resetTeacherPassword")
++    @Transactional
++    public String resetTeacherPassword(@RequestBody List<Integer> tids){
++        boolean flag = teacherService.resetTeacher(tids);
++        List<Integer> uids = tids;
++        boolean isSuccess = userService.resetPassword(uids,2);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++}
+Index: target/classes/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/application.yml b/target/classes/application.yml
+new file mode 100644
+--- /dev/null	(date 1675390676273)
++++ b/target/classes/application.yml	(date 1675390676273)
+@@ -0,0 +1,15 @@
++server:
++  port: 8089
++spring:
++  datasource:
++    url: jdbc:mysql://localhost:3306/leavesystem?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC
++    driver-class-name: com.mysql.cj.jdbc.Driver
++    username: root
++    password: 20011213fyh
++mybatis-plus:
++  mapper-locations: classpath*:com/jxd/leave/dao/mapping/*.xml
++  type-aliases-package: com.jxd.leave.model
++file:
++  path: upload/**
++  address: /upload/
++
+Index: src/main/java/com/jxd/leave/service/impl/TeacherServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/TeacherServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/TeacherServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1675406830307)
++++ b/src/main/java/com/jxd/leave/service/impl/TeacherServiceImpl.java	(date 1675406830307)
+@@ -0,0 +1,96 @@
++package com.jxd.leave.service.impl;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.dao.ITeacherDao;
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.Teacher;
++import com.jxd.leave.service.ITeacherService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName TeacherServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/29
++ * @Version 1.0
++ */
++@Service
++public class TeacherServiceImpl implements ITeacherService {
++    @Autowired
++    private ITeacherDao teacherDao;
++
++    @Override
++    public Map<String, Object> getAllTeacher(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String tname = map.get("tname");
++        String cnos = map.get("cno");
++        int cno = 0;
++        if (!"".equals(cnos)){
++            cno = Integer.parseInt(cnos);
++        }
++
++        Map<String,Object> map1 = new HashMap(4);
++        if (page != null && limit != null){
++            IPage<Teacher> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Teacher> pageRes = teacherDao.getAllTeacher(page1,tname,cno);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public boolean addTeacher(Teacher teacher) {
++        return teacherDao.addTeacher(teacher);
++    }
++
++    @Override
++    public boolean updateTeacher(Teacher teacher) {
++        return teacherDao.updateTeacher(teacher);
++    }
++
++    @Override
++    public boolean delTeacher(List<Integer> tids) {
++        return teacherDao.delTeacher(tids);
++    }
++
++    @Override
++    public Integer selecrTid(Teacher teacher) {
++        return teacherDao.selecrTid(teacher);
++    }
++
++    @Override
++    public Integer selectCno(String tname) {
++        return teacherDao.selectCno(tname);
++    }
++
++    @Override
++    public List<Teacher> getTeacher(Teacher teacher) {
++        return teacherDao.getTeacher(teacher);
++    }
++
++    @Override
++    public boolean updTeacherPassword(Password password) {
++        return teacherDao.updTeacherPassword(password);
++    }
++
++    @Override
++    public boolean resetTeacher(List<Integer> tids) {
++        return teacherDao.resetTeacher(tids);
++    }
++}
+Index: src/main/java/com/jxd/leave/dao/IChildrenDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/IChildrenDao.java b/src/main/java/com/jxd/leave/dao/IChildrenDao.java
+new file mode 100644
+--- /dev/null	(date 1675406830264)
++++ b/src/main/java/com/jxd/leave/dao/IChildrenDao.java	(date 1675406830264)
+@@ -0,0 +1,37 @@
++package com.jxd.leave.dao;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Password;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++
++public interface IChildrenDao {
++    IPage<Children> getAllChildren(IPage<Children> page, @Param("cname") String cname,@Param("cno") int cno);
++    IPage<Children> getChildren(IPage<Children> page, @Param("cname") String cname,@Param("cno") int cno);
++
++    boolean addChildren(Children children);
++
++    Children selectChildren(String cid);
++
++    boolean updateChildren(Children children);
++
++    boolean delChildren(List<Integer> cids);
++
++    Integer selecrCid(Children children);
++
++    Integer selectCno(String cname);
++
++    List<Children> getChild(Children children);
++
++    boolean updChild(Children children);
++
++    boolean updChildPassword(Password password);
++
++    boolean addPicture(@Param("newName") String newName,@Param("cid") Integer cid);
++
++    String selectImg(Integer cid);
++
++    boolean resetPassword(List<Integer> cids);
++}
+Index: src/main/java/com/jxd/leave/model/Admin.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Admin.java b/src/main/java/com/jxd/leave/model/Admin.java
+new file mode 100644
+--- /dev/null	(date 1675046516810)
++++ b/src/main/java/com/jxd/leave/model/Admin.java	(date 1675046516810)
+@@ -0,0 +1,57 @@
++package com.jxd.leave.model;
++
++/**
++ * @ClassName Admin
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/30
++ * @Version 1.0
++ */
++public class Admin {
++    private Integer aid;
++    private String aname;
++    private String ajob;
++    private String pwd;
++
++    public Admin() {
++    }
++
++    public Admin(Integer aid, String aname, String ajob, String pwd) {
++        this.aid = aid;
++        this.aname = aname;
++        this.ajob = ajob;
++        this.pwd = pwd;
++    }
++
++    public Integer getAid() {
++        return aid;
++    }
++
++    public void setAid(Integer aid) {
++        this.aid = aid;
++    }
++
++    public String getAname() {
++        return aname;
++    }
++
++    public void setAname(String aname) {
++        this.aname = aname;
++    }
++
++    public String getAjob() {
++        return ajob;
++    }
++
++    public void setAjob(String ajob) {
++        this.ajob = ajob;
++    }
++
++    public String getPwd() {
++        return pwd;
++    }
++
++    public void setPwd(String pwd) {
++        this.pwd = pwd;
++    }
++}
+Index: src/main/java/com/jxd/leave/model/Children.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Children.java b/src/main/java/com/jxd/leave/model/Children.java
+new file mode 100644
+--- /dev/null	(date 1674884864163)
++++ b/src/main/java/com/jxd/leave/model/Children.java	(date 1674884864163)
+@@ -0,0 +1,99 @@
++package com.jxd.leave.model;
++
++import ch.qos.logback.core.net.ssl.SSL;
++
++/**
++ * @ClassName Children
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/28
++ * @Version 1.0
++ */
++public class Children {
++    private Integer cid;
++    private String cname;
++    private Integer cno;
++    private Integer role;
++    private String sex;
++    private String pwd;
++    private String birthday;
++    private String picture;
++
++    public Children() {
++    }
++
++    public Children(Integer cid, String cname, Integer cno, Integer role, String sex, String pwd, String birthday, String picture) {
++        this.cid = cid;
++        this.cname = cname;
++        this.cno = cno;
++        this.role = role;
++        this.sex = sex;
++        this.pwd = pwd;
++        this.birthday = birthday;
++        this.picture = picture;
++    }
++
++    public Integer getCid() {
++        return cid;
++    }
++
++    public void setCid(Integer cid) {
++        this.cid = cid;
++    }
++
++    public String getCname() {
++        return cname;
++    }
++
++    public void setCname(String cname) {
++        this.cname = cname;
++    }
++
++    public Integer getCno() {
++        return cno;
++    }
++
++    public void setCno(Integer cno) {
++        this.cno = cno;
++    }
++
++    public Integer getRole() {
++        return role;
++    }
++
++    public void setRole(Integer role) {
++        this.role = role;
++    }
++
++    public String getSex() {
++        return sex;
++    }
++
++    public void setSex(String sex) {
++        this.sex = sex;
++    }
++
++    public String getPwd() {
++        return pwd;
++    }
++
++    public void setPwd(String pwd) {
++        this.pwd = pwd;
++    }
++
++    public String getBirthday() {
++        return birthday;
++    }
++
++    public void setBirthday(String birthday) {
++        this.birthday = birthday;
++    }
++
++    public String getPicture() {
++        return picture;
++    }
++
++    public void setPicture(String picture) {
++        this.picture = picture;
++    }
++}
+Index: src/main/java/com/jxd/leave/service/impl/LeaveServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/LeaveServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/LeaveServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1675150202431)
++++ b/src/main/java/com/jxd/leave/service/impl/LeaveServiceImpl.java	(date 1675150202431)
+@@ -0,0 +1,70 @@
++package com.jxd.leave.service.impl;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.dao.ILeaveDao;
++import com.jxd.leave.model.Class;
++import com.jxd.leave.model.Leave;
++import com.jxd.leave.service.ILeaveService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName LeaveServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/29
++ * @Version 1.0
++ */
++@Service
++public class LeaveServiceImpl implements ILeaveService {
++    @Autowired
++    private ILeaveDao leaveDao;
++
++    @Override
++    public List<Leave> getAllLeaveType() {
++        return leaveDao.getAllLeaveType();
++    }
++
++    @Override
++    public Map<String, Object> getAllLeave(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String lname = map.get("lname");
++
++        Map<String,Object> map1 = new HashMap(3);
++        if (page != null && limit != null){
++            IPage<Leave> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Leave> pageRes = leaveDao.getAllLeave(page1,lname);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public boolean addLeave(Leave leave) {
++        return leaveDao.addLeave(leave);
++    }
++
++    @Override
++    public boolean updateLeave(Leave leave) {
++        return leaveDao.updateLeave(leave);
++    }
++
++    @Override
++    public boolean delLeave(List<Integer> lids) {
++        return leaveDao.delLeave(lids);
++    }
++}
+Index: src/main/java/com/jxd/leave/service/ILeaveService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/ILeaveService.java b/src/main/java/com/jxd/leave/service/ILeaveService.java
+new file mode 100644
+--- /dev/null	(date 1675150202397)
++++ b/src/main/java/com/jxd/leave/service/ILeaveService.java	(date 1675150202397)
+@@ -0,0 +1,19 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Leave;
++
++import java.util.List;
++import java.util.Map;
++
++public interface ILeaveService {
++    List<Leave> getAllLeaveType();
++
++    Map<String, Object> getAllLeave(Map<String,String> map);
++
++    boolean addLeave(Leave leave);
++
++    boolean updateLeave(Leave leave);
++
++    boolean delLeave(List<Integer> lids);
++
++}
+Index: src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/application.yml b/src/main/resources/application.yml
+new file mode 100644
+--- /dev/null	(date 1675390676273)
++++ b/src/main/resources/application.yml	(date 1675390676273)
+@@ -0,0 +1,15 @@
++server:
++  port: 8089
++spring:
++  datasource:
++    url: jdbc:mysql://localhost:3306/leavesystem?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC
++    driver-class-name: com.mysql.cj.jdbc.Driver
++    username: root
++    password: 20011213fyh
++mybatis-plus:
++  mapper-locations: classpath*:com/jxd/leave/dao/mapping/*.xml
++  type-aliases-package: com.jxd.leave.model
++file:
++  path: upload/**
++  address: /upload/
++
+Index: src/main/java/com/jxd/leave/controller/LeaveController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/LeaveController.java b/src/main/java/com/jxd/leave/controller/LeaveController.java
+new file mode 100644
+--- /dev/null	(date 1675150786781)
++++ b/src/main/java/com/jxd/leave/controller/LeaveController.java	(date 1675150786781)
+@@ -0,0 +1,63 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.Class;
++import com.jxd.leave.model.Leave;
++import com.jxd.leave.service.ILeaveService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName LeaveController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/29
++ * @Version 1.0
++ */
++@RestController
++public class LeaveController {
++    @Autowired
++    private ILeaveService leaveService;
++
++    @RequestMapping("/getAllLeaveType")
++    public List<Leave> getAllClass(){
++        List<Leave> list = leaveService.getAllLeaveType();
++        return list;
++    }
++
++    @RequestMapping("/getAllLeave")
++    public Map<String, Object> getLeave(@RequestBody Map<String,String> map){
++        return leaveService.getAllLeave(map);
++    }
++
++    @RequestMapping("/addLeave")
++    public String addLeave(@RequestBody Leave leave){
++        if (leaveService.addLeave(leave)){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updateLeave")
++    public String updateLeave(@RequestBody Leave leave){
++        if (leaveService.updateLeave(leave)){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/delLeave")
++    public String delLeave(@RequestBody List<Integer> lids){
++        if (leaveService.delLeave(lids)){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++}
+Index: target/classes/com/jxd/leave/dao/mapping/ChildrenMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/ChildrenMapper.xml b/target/classes/com/jxd/leave/dao/mapping/ChildrenMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675406830367)
++++ b/target/classes/com/jxd/leave/dao/mapping/ChildrenMapper.xml	(date 1675406830367)
+@@ -0,0 +1,72 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IChildrenDao">
++    <insert id="addChildren">
++        insert into children (cname,pwd,role,sex,picture,birthday,cno)
++        values (#{cname},'888888',3,#{sex},#{picture},#{birthday},#{cno})
++    </insert>
++    <update id="addPicture">
++        update  children set picture=#{newName} where cid=#{cid}
++    </update>
++    <update id="updateChildren">
++        update children set cname=#{cname},sex=#{sex},picture=#{picture},birthday=#{birthday},cno=#{cno}
++        where cid=#{cid}
++    </update>
++    <update id="updChild">
++        update children set birthday=#{birthday} where cname=#{cname}
++    </update>
++    <update id="updChildPassword">
++        update children set pwd=#{newPassword} where cid=#{id}
++    </update>
++    <update id="resetPassword">
++        update children set pwd=888888 where cid in
++        <foreach collection="cids" item="cids" open="(" separator="," close=")">
++            #{cids}
++        </foreach>
++    </update>
++    <delete id="delChildren">
++        delete from children where cid in
++        <foreach collection="cids" item="cids" open="(" separator="," close=")">
++            #{cids}
++        </foreach>
++    </delete>
++
++
++    <select id="getAllChildren" resultType="java.util.HashMap">
++        select c.cid,c.cname,c.sex,c.picture,c.birthday,c.cno,cl.clname from children c
++        left join class cl on c.cno = cl.cno
++        <where>
++            <if test="cname != '' and cname != null">
++                cname like '%' #{cname} '%'
++            </if>
++            <if test="cno != 0">
++                and c.cno = #{cno}
++            </if>
++        </where>
++         order by cid
++    </select>
++    <select id="selectChildren" resultType="children">
++        select cname,sex,picture,birthday,cno from children where cid = cid
++    </select>
++    <select id="selecrCid" resultType="integer">
++        select cid from children where cname=#{cname}
++    </select>
++    <select id="selectCno" resultType="integer">
++        select cno from children where cname=#{cname}
++    </select>
++    <select id="getChildren" resultType="hashmap">
++        select c.cid,c.cname,c.sex,c.picture,c.birthday,c.cno,cl.clname from children c
++        left join class cl on c.cno = cl.cno where c.cno=#{cno}
++            <if test="cname != '' and cname != null">
++              and  cname like '%' #{cname} '%'
++            </if>
++        order by cid
++    </select>
++    <select id="getChild" resultType="children">
++        select cid,cname,pwd,birthday,sex,c.cno,cl.clname from children c
++        left join class cl on c.cno=cl.cno where c.cname=#{cname}
++    </select>
++    <select id="selectImg" resultType="string">
++        select picture from children where cid=#{cid}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/service/impl/AdminServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/AdminServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/AdminServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1675065334585)
++++ b/src/main/java/com/jxd/leave/service/impl/AdminServiceImpl.java	(date 1675065334585)
+@@ -0,0 +1,39 @@
++package com.jxd.leave.service.impl;
++
++import com.jxd.leave.dao.IAdminDao;
++import com.jxd.leave.model.Admin;
++import com.jxd.leave.model.Password;
++import com.jxd.leave.service.IAdminService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.List;
++
++/**
++ * @ClassName AdminServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/30
++ * @Version 1.0
++ */
++@Service
++public class AdminServiceImpl implements IAdminService {
++
++    @Autowired
++    private IAdminDao adminDao;
++
++    @Override
++    public List<Admin> selectAdmin(String aname) {
++        return adminDao.selectAdmin(aname);
++    }
++
++    @Override
++    public boolean updAdmin(Admin admin) {
++        return adminDao.updAdmin(admin);
++    }
++
++    @Override
++    public boolean updPassword(Password password) {
++        return adminDao.updPassword(password);
++    }
++}
+Index: src/main/java/com/jxd/leave/model/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/User.java b/src/main/java/com/jxd/leave/model/User.java
+new file mode 100644
+--- /dev/null	(date 1674829251119)
++++ b/src/main/java/com/jxd/leave/model/User.java	(date 1674829251119)
+@@ -0,0 +1,67 @@
++package com.jxd.leave.model;
++
++/**
++ * @ClassName model
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/27
++ * @Version 1.0
++ */
++public class User {
++    private Integer uid;
++    private String uname;
++    private String pwd;
++    private Integer role;
++    private Integer peopleid;
++
++    public User() {
++    }
++
++    public User(Integer uid, String uname, String pwd, Integer role, Integer peopleid) {
++        this.uid = uid;
++        this.uname = uname;
++        this.pwd = pwd;
++        this.role = role;
++        this.peopleid = peopleid;
++    }
++
++    public Integer getUid() {
++        return uid;
++    }
++
++    public void setUid(Integer uid) {
++        this.uid = uid;
++    }
++
++    public String getUname() {
++        return uname;
++    }
++
++    public void setUname(String uname) {
++        this.uname = uname;
++    }
++
++    public String getPwd() {
++        return pwd;
++    }
++
++    public void setPwd(String pwd) {
++        this.pwd = pwd;
++    }
++
++    public Integer getRole() {
++        return role;
++    }
++
++    public void setRole(Integer role) {
++        this.role = role;
++    }
++
++    public Integer getPeopleid() {
++        return peopleid;
++    }
++
++    public void setPeopleid(Integer peopleid) {
++        this.peopleid = peopleid;
++    }
++}
+Index: src/main/java/com/jxd/leave/model/Password.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Password.java b/src/main/java/com/jxd/leave/model/Password.java
+new file mode 100644
+--- /dev/null	(date 1675319664084)
++++ b/src/main/java/com/jxd/leave/model/Password.java	(date 1675319664084)
+@@ -0,0 +1,67 @@
++package com.jxd.leave.model;
++
++/**
++ * @ClassName Password
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/30
++ * @Version 1.0
++ */
++public class Password {
++    private Integer id;
++    private Integer role;
++    private String oldPassword;
++    private String newPassword;
++    private String newPassword2;
++
++    public Password() {
++    }
++
++    public Password(Integer id, Integer role, String oldPassword, String newPassword, String newPassword2) {
++        this.id = id;
++        this.role = role;
++        this.oldPassword = oldPassword;
++        this.newPassword = newPassword;
++        this.newPassword2 = newPassword2;
++    }
++
++    public Integer getId() {
++        return id;
++    }
++
++    public void setId(Integer id) {
++        this.id = id;
++    }
++
++    public String getNewPassword() {
++        return newPassword;
++    }
++
++    public void setNewPassword(String newPassword) {
++        this.newPassword = newPassword;
++    }
++
++    public String getOldPassword() {
++        return oldPassword;
++    }
++
++    public void setOldPassword(String oldPassword) {
++        this.oldPassword = oldPassword;
++    }
++
++
++    public String getNewPassword2() {
++        return newPassword2;
++    }
++
++    public void setNewPassword2(String newPassword2) {
++        this.newPassword2 = newPassword2;
++    }
++    public Integer getRole() {
++        return role;
++    }
++
++    public void setRole(Integer role) {
++        this.role = role;
++    }
++}
+Index: src/main/java/com/jxd/leave/controller/AdminController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/AdminController.java b/src/main/java/com/jxd/leave/controller/AdminController.java
+new file mode 100644
+--- /dev/null	(date 1675321229223)
++++ b/src/main/java/com/jxd/leave/controller/AdminController.java	(date 1675321229223)
+@@ -0,0 +1,58 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.Admin;
++import com.jxd.leave.model.Password;
++import com.jxd.leave.service.IAdminService;
++import com.jxd.leave.service.IUserService;
++import org.apache.ibatis.annotations.Param;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RequestParam;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.List;
++
++/**
++ * @ClassName AdminController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/30
++ * @Version 1.0
++ */
++@RestController
++public class AdminController {
++    @Autowired
++    private IAdminService adminService;
++    @Autowired
++    private IUserService userService;
++
++    @RequestMapping("/getAdmin")
++    public List<Admin> getAdmin(@RequestBody Admin admin){
++        String aname = admin.getAname();
++        List<Admin> list = adminService.selectAdmin(aname);
++        return list;
++    }
++
++    @RequestMapping("/updAdmin")
++    public String updAdmin(@RequestBody Admin admin){
++        boolean flag = adminService.updAdmin(admin);
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updPassword")
++    public String updPassword(@RequestBody Password password){
++        boolean flag = adminService.updPassword(password);
++        password.setRole(1);
++        boolean isSuccess = userService.updPassword(password);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++}
+Index: src/main/java/com/jxd/leave/service/IChildrenService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/IChildrenService.java b/src/main/java/com/jxd/leave/service/IChildrenService.java
+new file mode 100644
+--- /dev/null	(date 1675406830321)
++++ b/src/main/java/com/jxd/leave/service/IChildrenService.java	(date 1675406830321)
+@@ -0,0 +1,35 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Password;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++import java.util.Map;
++
++public interface IChildrenService {
++    Map<String, Object> getAllChildren(Map<String,String> map);
++    Map<String, Object> getChildren(Map<String,String> map);
++
++    boolean addChildren(Children children);
++
++    Children selectChildren(String cid);
++
++    boolean updateChildren(Children children);
++
++    boolean delChildren(List<Integer> cids);
++    Integer selecrCid(Children children);
++
++    Integer selectCno(String cname);
++
++    List<Children> getChild(Children children);
++    boolean updChildPassword(Password password);
++
++    boolean addPicture(String newName,Integer cid);
++
++    boolean updChild(Children children);
++
++    String selectImg(Integer cid);
++    boolean resetPassword(List<Integer> cids);
++
++}
+Index: src/main/java/com/jxd/leave/dao/IAdminDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/IAdminDao.java b/src/main/java/com/jxd/leave/dao/IAdminDao.java
+new file mode 100644
+--- /dev/null	(date 1675065334571)
++++ b/src/main/java/com/jxd/leave/dao/IAdminDao.java	(date 1675065334571)
+@@ -0,0 +1,14 @@
++package com.jxd.leave.dao;
++
++import com.jxd.leave.model.Admin;
++import com.jxd.leave.model.Password;
++
++import java.util.List;
++
++public interface IAdminDao {
++    List<Admin> selectAdmin(String aname);
++
++    boolean updAdmin(Admin admin);
++
++    boolean updPassword(Password password);
++}
+Index: src/main/java/com/jxd/leave/config/CrosConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/config/CrosConfig.java b/src/main/java/com/jxd/leave/config/CrosConfig.java
+new file mode 100644
+--- /dev/null	(date 1674818364267)
++++ b/src/main/java/com/jxd/leave/config/CrosConfig.java	(date 1674818364267)
+@@ -0,0 +1,24 @@
++package com.jxd.leave.config;
++
++import org.springframework.context.annotation.Configuration;
++import org.springframework.web.servlet.config.annotation.CorsRegistry;
++import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
++
++/**
++ * @Description:Todo
++ * @Date:2020/4/19
++ */
++@Configuration
++public class CrosConfig implements WebMvcConfigurer {
++    public void addCorsMappings(CorsRegistry registry){
++        ///**匹配的是我们所有后台的路径，代表后台共享了什么资源
++        registry.addMapping("/**")
++                //匹配的前台的服务器地址
++                .allowedOrigins("*")
++                //允许的前台的请求方式
++                .allowedMethods("GET","HEAD","POST","DELETE","OPTIONS")
++                .allowCredentials(true)
++                .maxAge(3600)
++                .allowedHeaders("*");
++    }
++}
+Index: src/main/java/com/jxd/leave/dao/mapping/ChildrenMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/ChildrenMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/ChildrenMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675406830367)
++++ b/src/main/java/com/jxd/leave/dao/mapping/ChildrenMapper.xml	(date 1675406830367)
+@@ -0,0 +1,72 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IChildrenDao">
++    <insert id="addChildren">
++        insert into children (cname,pwd,role,sex,picture,birthday,cno)
++        values (#{cname},'888888',3,#{sex},#{picture},#{birthday},#{cno})
++    </insert>
++    <update id="addPicture">
++        update  children set picture=#{newName} where cid=#{cid}
++    </update>
++    <update id="updateChildren">
++        update children set cname=#{cname},sex=#{sex},picture=#{picture},birthday=#{birthday},cno=#{cno}
++        where cid=#{cid}
++    </update>
++    <update id="updChild">
++        update children set birthday=#{birthday} where cname=#{cname}
++    </update>
++    <update id="updChildPassword">
++        update children set pwd=#{newPassword} where cid=#{id}
++    </update>
++    <update id="resetPassword">
++        update children set pwd=888888 where cid in
++        <foreach collection="cids" item="cids" open="(" separator="," close=")">
++            #{cids}
++        </foreach>
++    </update>
++    <delete id="delChildren">
++        delete from children where cid in
++        <foreach collection="cids" item="cids" open="(" separator="," close=")">
++            #{cids}
++        </foreach>
++    </delete>
++
++
++    <select id="getAllChildren" resultType="java.util.HashMap">
++        select c.cid,c.cname,c.sex,c.picture,c.birthday,c.cno,cl.clname from children c
++        left join class cl on c.cno = cl.cno
++        <where>
++            <if test="cname != '' and cname != null">
++                cname like '%' #{cname} '%'
++            </if>
++            <if test="cno != 0">
++                and c.cno = #{cno}
++            </if>
++        </where>
++         order by cid
++    </select>
++    <select id="selectChildren" resultType="children">
++        select cname,sex,picture,birthday,cno from children where cid = cid
++    </select>
++    <select id="selecrCid" resultType="integer">
++        select cid from children where cname=#{cname}
++    </select>
++    <select id="selectCno" resultType="integer">
++        select cno from children where cname=#{cname}
++    </select>
++    <select id="getChildren" resultType="hashmap">
++        select c.cid,c.cname,c.sex,c.picture,c.birthday,c.cno,cl.clname from children c
++        left join class cl on c.cno = cl.cno where c.cno=#{cno}
++            <if test="cname != '' and cname != null">
++              and  cname like '%' #{cname} '%'
++            </if>
++        order by cid
++    </select>
++    <select id="getChild" resultType="children">
++        select cid,cname,pwd,birthday,sex,c.cno,cl.clname from children c
++        left join class cl on c.cno=cl.cno where c.cname=#{cname}
++    </select>
++    <select id="selectImg" resultType="string">
++        select picture from children where cid=#{cid}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/service/IAdminService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/IAdminService.java b/src/main/java/com/jxd/leave/service/IAdminService.java
+new file mode 100644
+--- /dev/null	(date 1675065334599)
++++ b/src/main/java/com/jxd/leave/service/IAdminService.java	(date 1675065334599)
+@@ -0,0 +1,13 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Admin;
++import com.jxd.leave.model.Password;
++
++import java.util.List;
++
++public interface IAdminService {
++    List<Admin> selectAdmin(String aname);
++    boolean updAdmin(Admin admin);
++    boolean updPassword(Password password);
++
++}
+Index: src/main/java/com/jxd/leave/controller/ChildrenController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/ChildrenController.java b/src/main/java/com/jxd/leave/controller/ChildrenController.java
+new file mode 100644
+--- /dev/null	(date 1675406946468)
++++ b/src/main/java/com/jxd/leave/controller/ChildrenController.java	(date 1675406946468)
+@@ -0,0 +1,173 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.User;
++import com.jxd.leave.service.IChildrenService;
++import com.jxd.leave.service.IUserService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.boot.system.ApplicationHome;
++import org.springframework.transaction.annotation.Transactional;
++import org.springframework.web.bind.annotation.*;
++import org.springframework.web.multipart.MultipartFile;
++
++import java.io.File;
++import java.io.IOException;
++import java.util.List;
++import java.util.Map;
++import java.util.UUID;
++
++/**
++ * @ClassName ChildrenController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/28
++ * @Version 1.0
++ */
++@RestController
++public class ChildrenController {
++    @Autowired
++    private IChildrenService childrenService;
++    @Autowired
++    private IUserService userService;
++    @Value("${file.address}")
++    String address;
++
++    @RequestMapping("/getChildren")
++    public Map<String, Object> getChildren(@RequestBody Map<String,String> map){
++        return childrenService.getAllChildren(map);
++    }
++
++    @RequestMapping("/getNotAllChildren")
++    public Map<String, Object> getNotAllChildren(@RequestBody Map<String,String> map){
++        return childrenService.getChildren(map);
++    }
++
++    @RequestMapping("/addChildren")
++    @Transactional
++    public String addChildren(@RequestBody Children children){
++        boolean flag = childrenService.addChildren(children);
++        int peopleid = childrenService.selecrCid(children);
++        User user = new User(null,children.getCname(),children.getPwd(),3,peopleid);
++        boolean isSuccess = userService.addUser(user);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updateChildren")
++    @Transactional
++    public String updateChildren(@RequestBody Children children){
++        boolean flag = childrenService.updateChildren(children);
++        User user = new User();
++        user.setUname(children.getCname());
++        user.setRole(3);
++        Integer id = childrenService.selecrCid(children);
++        user.setPeopleid(id);
++        boolean isSuccess = userService.updateUser(user);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/delChildren")
++    @Transactional
++    public String delChildren(@RequestBody List<Integer> cids){
++        boolean flag = childrenService.delChildren(cids);
++        List<Integer> uids = cids;
++        boolean isSuccess = userService.delUser(uids,3);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/getChild")
++    public List<Children> getChild(@RequestBody Children children){
++
++        List<Children> list = childrenService.getChild(children);
++        return childrenService.getChild(children);
++    }
++
++    @RequestMapping("/updChild")
++    public String updChild(@RequestBody Children children){
++        boolean flag = childrenService.updChild(children);
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updChildPassword")
++    @Transactional
++    public String updChildPassword(@RequestBody Password password){
++        boolean flag = childrenService.updChildPassword(password);
++        password.setRole(3);
++        boolean isSuccess = userService.updPassword(password);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    //获取配置文件中的对象
++    @RequestMapping("/uploadImg/{uname}")
++    @Transactional
++    public String uploadImg(@RequestParam("image") MultipartFile upload,@PathVariable("uname") String cname) {
++        ApplicationHome home = new ApplicationHome(getClass());
++        File fileJar = home.getSource();
++        String savePath = fileJar.getParent().toString() + address;
++
++        File file = new File(savePath);
++        if (!file.exists() || !file.isDirectory()) {
++            file.mkdir();
++        }
++        String oldName = upload.getOriginalFilename();
++        String newName = UUID.randomUUID() + "_" + oldName;
++        File saveFile = new File(savePath, newName);
++
++        try {
++            upload.transferTo(saveFile);
++        } catch (IOException e) {
++            throw new RuntimeException(e);
++        }
++        Children children = new Children();
++        children.setCname(cname);
++        Integer cid = childrenService.selecrCid(children);
++        if (childrenService.addPicture(newName,cid)){
++            return address + newName;
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/selectImg/{uname}")
++    public String selectImg(@PathVariable("uname") String cname){
++        Children children = new Children();
++        children.setCname(cname);
++        Integer cid = childrenService.selecrCid(children);
++        String img = childrenService.selectImg(cid);
++        return address + img;
++    }
++
++    @RequestMapping("/resetChildrenPassword")
++    @Transactional
++    public String resetChildrenPassword(@RequestBody List<Integer> cids){
++        boolean flag = childrenService.resetPassword(cids);
++        List<Integer> uids = cids;
++        boolean isSuccess = userService.resetPassword(uids,3);
++        if (flag && isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++}
+Index: src/main/java/com/jxd/leave/config/MybatisPlusConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/config/MybatisPlusConfig.java b/src/main/java/com/jxd/leave/config/MybatisPlusConfig.java
+new file mode 100644
+--- /dev/null	(date 1674818364288)
++++ b/src/main/java/com/jxd/leave/config/MybatisPlusConfig.java	(date 1674818364288)
+@@ -0,0 +1,28 @@
++package com.jxd.leave.config;
++
++import com.baomidou.mybatisplus.annotation.DbType;
++import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
++import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++
++/**
++ * @ClassName MybatisPlusConfig
++ * @Description TODO
++ * @Author lixiaoru
++ * @Date 2020/11/18
++ * @Version 1.0
++ */
++@Configuration
++public class MybatisPlusConfig {
++    @Bean
++    public MybatisPlusInterceptor paginationInterceptor() {
++        //创建插件集合
++        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
++        //创建分页插件，并指定数据库类型
++        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
++        //添加分页插件
++        mybatisPlusInterceptor.addInnerInterceptor(paginationInterceptor);
++        return mybatisPlusInterceptor;
++    }
++}
+Index: src/main/java/com/jxd/leave/service/impl/ChildrenServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/ChildrenServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/ChildrenServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1675406830353)
++++ b/src/main/java/com/jxd/leave/service/impl/ChildrenServiceImpl.java	(date 1675406830353)
+@@ -0,0 +1,145 @@
++package com.jxd.leave.service.impl;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.dao.IChildrenDao;
++import com.jxd.leave.dao.ITeacherDao;
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Password;
++import com.jxd.leave.service.IChildrenService;
++import org.apache.ibatis.annotations.Param;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName ChildrenServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/28
++ * @Version 1.0
++ */
++@Service
++public class ChildrenServiceImpl implements IChildrenService {
++    @Autowired
++    private IChildrenDao childrenDao;
++    @Autowired
++    private ITeacherDao teacherDao;
++
++    @Override
++    public Map<String, Object> getAllChildren(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String cname = map.get("cname");
++        String cnos = map.get("cno");
++        int cno = 0;
++        if (!"".equals(cnos)){
++            cno = Integer.parseInt(cnos);
++        }
++
++        Map<String,Object> map1 = new HashMap(4);
++        if (page != null && limit != null){
++            IPage<Children> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Children> pageRes = childrenDao.getAllChildren(page1,cname,cno);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public Map<String, Object> getChildren(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String cname = map.get("cname");
++        String tname = map.get("tname");
++        int cno = teacherDao.selectCno(tname);
++
++
++        Map<String,Object> map1 = new HashMap(4);
++        if (page != null && limit != null){
++            IPage<Children> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Children> pageRes = childrenDao.getChildren(page1,cname,cno);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public boolean addChildren(Children children) {
++        return childrenDao.addChildren(children);
++    }
++
++    @Override
++    public Children selectChildren(String cid) {
++        return childrenDao.selectChildren(cid);
++    }
++
++    @Override
++    public boolean updateChildren(Children children) {
++        return childrenDao.updateChildren(children);
++    }
++
++    @Override
++    public boolean delChildren(List<Integer> cids) {
++        return childrenDao.delChildren(cids);
++    }
++
++    @Override
++    public Integer selecrCid(Children children) {
++        return childrenDao.selecrCid(children);
++    }
++
++    @Override
++    public Integer selectCno(String cname) {
++        return childrenDao.selectCno(cname);
++    }
++
++    @Override
++    public List<Children> getChild(Children children) {
++        return childrenDao.getChild(children);
++    }
++
++    @Override
++    public boolean updChildPassword(Password password) {
++        return childrenDao.updChildPassword(password);
++    }
++
++    @Override
++    public boolean addPicture(String newName,Integer cid) {
++        return childrenDao.addPicture(newName,cid);
++    }
++
++    @Override
++    public boolean updChild(Children children) {
++        return childrenDao.updChild(children);
++    }
++
++    @Override
++    public String selectImg(Integer cid) {
++        return childrenDao.selectImg(cid);
++    }
++
++    @Override
++    public boolean resetPassword(List<Integer> cids) {
++        return childrenDao.resetPassword(cids);
++    }
++}
+Index: src/main/java/com/jxd/leave/dao/mapping/AdminMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/AdminMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/AdminMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675065334517)
++++ b/src/main/java/com/jxd/leave/dao/mapping/AdminMapper.xml	(date 1675065334517)
+@@ -0,0 +1,15 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IAdminDao">
++    <update id="updAdmin">
++        update admin set aname = #{aname},ajob = #{ajob} where aid=#{aid}
++    </update>
++    <update id="updPassword">
++        update admin set pwd = #{newPassword} where aid=#{id}
++    </update>
++
++
++    <select id="selectAdmin" resultType="admin">
++        select aid,aname,ajob,pwd from admin where aname = #{aname}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/controller/UserController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/UserController.java b/src/main/java/com/jxd/leave/controller/UserController.java
+new file mode 100644
+--- /dev/null	(date 1675046267867)
++++ b/src/main/java/com/jxd/leave/controller/UserController.java	(date 1675046267867)
+@@ -0,0 +1,44 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.User;
++import com.jxd.leave.service.IChildrenService;
++import com.jxd.leave.service.IUserService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.Map;
++
++/**
++ * @ClassName UserController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/27
++ * @Version 1.0
++ */
++@RestController
++public class UserController {
++    @Autowired
++    private IUserService userService;
++
++
++
++    @RequestMapping("/login")
++    public String login(@RequestBody User user){
++        Integer role = userService.selectRole(user);
++        if (role == null){
++            return "error";
++        }
++        boolean flag = userService.login(user);
++        if(role == 1 && flag){
++            return "success1";
++        } else if (role == 2 && flag) {
++            return "success2";
++        } else if (role == 3 && flag) {
++            return "success3";
++        }else {
++            return "error";
++        }
++    }
++}
+Index: .idea/uiDesigner.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/uiDesigner.xml b/.idea/uiDesigner.xml
+new file mode 100644
+--- /dev/null	(date 1674820642175)
++++ b/.idea/uiDesigner.xml	(date 1674820642175)
+@@ -0,0 +1,124 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Palette2">
++    <group name="Swing">
++      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
++      </item>
++      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.svg" removable="false" auto-create-binding="false" can-attach-label="true">
++        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
++        <initial-values>
++          <property name="text" value="Button" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="RadioButton" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="CheckBox" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="Label" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSeparator" icon="/com/intellij/uiDesigner/icons/separator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JProgressBar" icon="/com/intellij/uiDesigner/icons/progressbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JToolBar" icon="/com/intellij/uiDesigner/icons/toolbar.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1">
++          <preferred-size width="-1" height="20" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JToolBar$Separator" icon="/com/intellij/uiDesigner/icons/toolbarSeparator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JScrollBar" icon="/com/intellij/uiDesigner/icons/scrollbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
++      </item>
++    </group>
++  </component>
++</project>
+\ No newline at end of file
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+new file mode 100644
+--- /dev/null	(date 1674888603173)
++++ b/pom.xml	(date 1674888603173)
+@@ -0,0 +1,64 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xmlns="http://maven.apache.org/POM/4.0.0"
++         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++  <modelVersion>4.0.0</modelVersion>
++
++  <groupId>com.jxd</groupId>
++  <artifactId>leave</artifactId>
++  <version>1.0-SNAPSHOT</version>
++
++  <!--继承的父依赖-->
++  <parent>
++    <groupId>org.springframework.boot</groupId>
++    <artifactId>spring-boot-starter-parent</artifactId>
++    <version>2.2.13.RELEASE</version>
++  </parent>
++  <!--web模块的依赖-->
++  <dependencies>
++    <dependency>
++      <groupId>org.springframework.boot</groupId>
++      <artifactId>spring-boot-starter-web</artifactId>
++    </dependency>
++    <!--数据库驱动包-->
++    <dependency>
++      <groupId>mysql</groupId>
++      <artifactId>mysql-connector-java</artifactId>
++      <version>8.0.22</version>
++    </dependency>
++    <!--mybatisplus依赖包-->
++    <dependency>
++      <groupId>com.baomidou</groupId>
++      <artifactId>mybatis-plus-boot-starter</artifactId>
++      <version>3.4.3.4</version>
++    </dependency>
++    <dependency>
++      <groupId>org.springframework.boot</groupId>
++      <artifactId>spring-boot-starter-thymeleaf</artifactId>
++    </dependency>
++    <dependency>
++      <groupId>org.springframework.boot</groupId>
++      <artifactId>spring-boot-starter-test</artifactId>
++      <scope>test</scope>
++    </dependency>
++  </dependencies>
++
++
++  <build>
++    <resources>
++      <!--让项目能够编译src目录下得xml文件-->
++      <resource>
++        <directory>src/main/java</directory>
++        <includes>
++          <include>**/*.xml</include>
++        </includes>
++        <filtering>false</filtering>
++      </resource>
++      <resource>
++        <directory>src/main/resources</directory>
++      </resource>
++
++    </resources>
++  </build>
++
++</project>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/service/IUserService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/IUserService.java b/src/main/java/com/jxd/leave/service/IUserService.java
+new file mode 100644
+--- /dev/null	(date 1675406830230)
++++ b/src/main/java/com/jxd/leave/service/IUserService.java	(date 1675406830230)
+@@ -0,0 +1,24 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.User;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++import java.util.Map;
++import java.util.Objects;
++
++public interface IUserService {
++    boolean login(User user);
++    Integer selectRole(User user);
++
++    boolean addUser(User user);
++
++    boolean delUser(List<Integer> uids,Integer role);
++
++    boolean updPassword(Password password);
++
++    boolean updateUser(User user);
++
++    boolean resetPassword(@Param("uids") List<Integer> uids,@Param("role") Integer role);
++}
+Index: src/main/java/com/jxd/leave/dao/IUserDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/IUserDao.java b/src/main/java/com/jxd/leave/dao/IUserDao.java
+new file mode 100644
+--- /dev/null	(date 1675406830337)
++++ b/src/main/java/com/jxd/leave/dao/IUserDao.java	(date 1675406830337)
+@@ -0,0 +1,25 @@
++package com.jxd.leave.dao;
++
++
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.User;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++
++public interface IUserDao {
++    boolean login(User user);
++
++    Integer selectRole(User user);
++
++    boolean addUser(User user);
++
++    boolean updateUser(User user);
++
++    boolean delUser(@Param("uids") List<Integer> uids,@Param("role") Integer role);
++
++    boolean updPassword(Password password);
++
++    boolean resetPassword(@Param("uids") List<Integer> uids,@Param("role") Integer role);
++
++}
+Index: src/main/java/com/jxd/leave/dao/mapping/UserMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/UserMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/UserMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675406830382)
++++ b/src/main/java/com/jxd/leave/dao/mapping/UserMapper.xml	(date 1675406830382)
+@@ -0,0 +1,36 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IUserDao">
++    <insert id="addUser">
++        insert into user (uname,pwd,role,peopleid)
++        values (#{uname},'888888',#{role},#{peopleid})
++    </insert>
++    <update id="updPassword">
++        update user set pwd=#{newPassword} where peopleid=#{id} and role = #{role}
++    </update>
++    <update id="updateUser">
++        update user set uname = #{uname} where role = #{role} and peopleid = #{peopleid}
++    </update>
++    <update id="resetPassword">
++        update user set pwd=888888 where peopleid in
++        <foreach collection="uids" item="uids" open="(" separator="," close=")">
++            #{uids}
++        </foreach>
++        and role = #{role}
++    </update>
++    <delete id="delUser">
++        delete from user where peopleid in
++        <foreach collection="uids" item="uids" open="(" separator="," close=")">
++            #{uids}
++        </foreach>
++        and role = #{role}
++    </delete>
++
++    <select id="login" resultType="boolean">
++        select count(uid) from user where uname = #{uname} and pwd = #{pwd}
++    </select>
++    <select id="selectRole" resultType="int">
++        select role from user where uname = #{uname} and pwd = #{pwd}
++    </select>
++
++</mapper>
+\ No newline at end of file
+Index: src/test/java/com/jxd/leave/ChildTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/jxd/leave/ChildTest.java b/src/test/java/com/jxd/leave/ChildTest.java
+new file mode 100644
+--- /dev/null	(date 1674896701506)
++++ b/src/test/java/com/jxd/leave/ChildTest.java	(date 1674896701506)
+@@ -0,0 +1,47 @@
++package com.jxd.leave;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.model.Class;
++import com.jxd.leave.service.IChildrenService;
++import com.jxd.leave.service.IClassService;
++import org.junit.jupiter.api.Test;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.test.context.SpringBootTest;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName Test
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/28
++ * @Version 1.0
++ */
++@SpringBootTest
++public class ChildTest {
++
++    @Autowired
++    private IChildrenService childrenService;
++
++    @Autowired
++    private IClassService classService;
++
++
++    @Test
++    public void selectPage(){
++        Map<String,String> map = new HashMap<>();
++        IPage page1 = new Page(1,2);
++        map.put("page","1");
++        map.put("limit","10");
++        map.put("cname","小红");
++        map.put("cno","1");
++        Map<String,Object> map1 = childrenService.getAllChildren(map);
++        System.out.println(map1.toString());
++        List<Class> list = classService.getAllClass();
++        System.out.println(list.toString());
++
++    }
++}
+Index: target/classes/com/jxd/leave/dao/mapping/TeacherMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/TeacherMapper.xml b/target/classes/com/jxd/leave/dao/mapping/TeacherMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675498948871)
++++ b/target/classes/com/jxd/leave/dao/mapping/TeacherMapper.xml	(date 1675498948871)
+@@ -0,0 +1,51 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.ITeacherDao">
++    <insert id="addTeacher">
++        insert into teacher (tname,pwd,role,cno)
++        values (#{tname},'888888',3,#{cno})
++    </insert>
++    <update id="updateTeacher">
++        update teacher set tname=#{tname},cno=#{cno}
++        where tid=#{tid}
++    </update>
++    <update id="updTeacherPassword">
++        update teacher set pwd=#{newPassword} where tid=#{id}
++    </update>
++    <update id="resetTeacher">
++        update teacher set pwd=888888 where tid in
++        <foreach collection="tids" item="tids" open="(" separator="," close=")">
++        #{tids}
++        </foreach>
++    </update>
++    <delete id="delTeacher">
++        delete from teacher where tid in
++        <foreach collection="tids" item="tids" open="(" separator="," close=")">
++            #{tids}
++        </foreach>
++    </delete>
++
++
++    <select id="getAllTeacher" resultType="java.util.HashMap">
++        select t.tid,t.tname,t.cno,cl.clname from teacher t
++        left join class cl on t.cno = cl.cno
++        <where>
++            <if test="tname != '' and tname != null">
++                tname like '%' #{tname} '%'
++            </if>
++            <if test="cno != 0">
++                and t.cno = #{cno}
++            </if>
++        </where>
++        order by tid
++    </select>
++    <select id="selecrTid" resultType="integer">
++        select tid from teacher where tname=#{tname}
++    </select>
++    <select id="selectCno" resultType="integer">
++        select cno from teacher where tname like '%' #{tname} '%'
++    </select>
++    <select id="getTeacher" resultType="teacher">
++        select tid,tname,pwd,cno from teacher where tname=#{tname}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1674818364739)
++++ b/.idea/misc.xml	(date 1674818364739)
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="FrameworkDetectionExcludesConfiguration">
++    <file type="web" url="file://$PROJECT_DIR$" />
++  </component>
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/pom.xml" />
++      </list>
++    </option>
++  </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: target/classes/com/jxd/leave/dao/mapping/ParentsMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/ParentsMapper.xml b/target/classes/com/jxd/leave/dao/mapping/ParentsMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675229841217)
++++ b/target/classes/com/jxd/leave/dao/mapping/ParentsMapper.xml	(date 1675229841217)
+@@ -0,0 +1,29 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IParentsDao">
++    <insert id="addParents">
++        insert into parents (pname,relationship,cid,phone,cname) values (#{pname},#{relationship},#{cid},#{phone},#{cname})
++    </insert>
++    <update id="updParents">
++        update parents set pname=#{pname},relationship=#{relationship},cid=#{cid},phone=#{phone},cname=#{cname} where pid=#{pid}
++    </update>
++    <delete id="delParents">
++        delete from parents where pid in
++        <foreach collection="pids" item="pids" open="(" separator="," close=")">
++            #{pids}
++        </foreach>
++    </delete>
++
++    <select id="getAllParents" resultType="hashmap">
++        select pid,pname,relationship,cid,phone,cname from parents  where cid = #{cid}
++        <if test="pname != '' and pname != null">
++            and pname like '%' #{pname} '%'
++        </if>
++        <if test="relationship != '' and relationship != null">
++            and relationship like '%' #{relationship} '%'
++        </if>
++    </select>
++    <select id="getParents" resultType="parents">
++        select pid,relationship from parents where cid = #{cid}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/service/impl/UserServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/UserServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/UserServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1675406830191)
++++ b/src/main/java/com/jxd/leave/service/impl/UserServiceImpl.java	(date 1675406830191)
+@@ -0,0 +1,66 @@
++package com.jxd.leave.service.impl;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.dao.IChildrenDao;
++import com.jxd.leave.dao.IUserDao;
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Password;
++import com.jxd.leave.model.User;
++import com.jxd.leave.service.IUserService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.Objects;
++
++/**
++ * @ClassName UserServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/27
++ * @Version 1.0
++ */
++@Service
++public class UserServiceImpl implements IUserService {
++
++    @Autowired
++    private IUserDao userDao;
++
++    @Override
++    public boolean login(User user) {
++        return userDao.login(user);
++    }
++
++    @Override
++    public Integer selectRole(User user) {
++        return userDao.selectRole(user);
++    }
++
++    @Override
++    public boolean addUser(User user) {
++        return userDao.addUser(user);
++    }
++
++    @Override
++    public boolean delUser(List<Integer> uids, Integer role) {
++        return userDao.delUser(uids,role);
++    }
++
++    @Override
++    public boolean updPassword(Password password) {
++        return userDao.updPassword(password);
++    }
++
++    @Override
++    public boolean updateUser(User user) {
++        return userDao.updateUser(user);
++    }
++
++    @Override
++    public boolean resetPassword(List<Integer> uids, Integer role) {
++        return userDao.resetPassword(uids,role);
++    }
++}
+Index: target/classes/com/jxd/leave/dao/mapping/CleaveMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/CleaveMapper.xml b/target/classes/com/jxd/leave/dao/mapping/CleaveMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675479975372)
++++ b/target/classes/com/jxd/leave/dao/mapping/CleaveMapper.xml	(date 1675479975372)
+@@ -0,0 +1,86 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.ICleaveDao">
++    <insert id="addLeave">
++        insert into cleave (statrt,end,reason,lid,sid,cid,pid,cno,day,typeid,cname)
++        values (#{statrt},#{end},#{reason},#{lid},1,#{cid},#{pid},#{cno},#{day},1,#{cname})
++    </insert>
++    <update id="updLeave">
++        update cleave set statrt=#{statrt},end=#{end},reason=#{reason},lid=#{lid},pid=#{pid},day=#{day} where clid=#{clid}
++    </update>
++    <update id="submit">
++        update cleave set sid = 2 where clid=#{clid}
++    </update>
++    <update id="agree">
++        update cleave set sid = 3 where clid=#{clid}
++    </update>
++    <update id="disagree">
++        update cleave set sid = 4,typeid = 2 where clid=#{clid}
++    </update>
++    <update id="logoutLeave">
++        update cleave set sid = 5,typeid = 2 where clid=#{clid}
++    </update>
++    <update id="updRefuseReason">
++        update cleave set refusereson=#{refusereson},sid = 4,typeid = 2 where clid=#{clid}
++    </update>
++    <delete id="deleteLeave">
++        delete from cleave where clid=#{clid}
++    </delete>
++    <select id="getAllCleave" resultType="java.util.HashMap">
++        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
++               p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
++               left join leavetype l on cl.lid = l.lid
++               left join state s on cl.sid = s.sid
++               left join children c on cl.cid = c.cid
++               left join class cla on cl.cno = cla.cno
++               left join parents p on cl.pid = p.pid
++                where cl.cid = #{cid}
++            <if test="uname != '' and uname != null">
++                and c.cname like '%' #{uname} '%'
++            </if>
++            <if test="statrt != '' and statrt != null">
++                and statrt = #{statrt}
++            </if>
++        order by clid desc
++    </select>
++    <select id="selectState" resultType="integer">
++        select sid from cleave where clid=#{clid}
++    </select>
++    <select id="getCleave" resultType="hashmap">
++        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
++        p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
++        left join leavetype l on cl.lid = l.lid
++        left join state s on cl.sid = s.sid
++        left join children c on cl.cid = c.cid
++        left join class cla on cl.cno = cla.cno
++        left join parents p on cl.pid = p.pid
++        where cl.cno = #{cno} and (cl.sid = 2 or cl.sid = 3 or cl.sid = 4)
++            <if test="cname != '' and cname != null">
++              and  c.cname like '%' #{cname} '%'
++            </if>
++            <if test="statrt != '' and statrt != null">
++                and statrt = #{statrt}
++            </if>
++        order by clid desc
++    </select>
++    <select id="selectType" resultType="integer">
++        select typeid from cleave where cid=#{cid}
++    </select>
++    <select id="getAdminCleave" resultType="hashmap">
++        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
++        p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
++        left join leavetype l on cl.lid = l.lid
++        left join state s on cl.sid = s.sid
++        left join children c on cl.cid = c.cid
++        left join class cla on cl.cno = cla.cno
++        left join parents p on cl.pid = p.pid
++        where (cl.sid = 2 or cl.sid = 3 or cl.sid = 4)
++        <if test="cno != '' and cname != null">
++            and cl.cno = #{cno}
++        </if>
++        <if test="cname != '' and cname != null">
++            and  c.cname like '%' #{cname} '%'
++        </if>
++        order by clid desc
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/dao/mapping/CleaveMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/CleaveMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/CleaveMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675479975372)
++++ b/src/main/java/com/jxd/leave/dao/mapping/CleaveMapper.xml	(date 1675479975372)
+@@ -0,0 +1,86 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.ICleaveDao">
++    <insert id="addLeave">
++        insert into cleave (statrt,end,reason,lid,sid,cid,pid,cno,day,typeid,cname)
++        values (#{statrt},#{end},#{reason},#{lid},1,#{cid},#{pid},#{cno},#{day},1,#{cname})
++    </insert>
++    <update id="updLeave">
++        update cleave set statrt=#{statrt},end=#{end},reason=#{reason},lid=#{lid},pid=#{pid},day=#{day} where clid=#{clid}
++    </update>
++    <update id="submit">
++        update cleave set sid = 2 where clid=#{clid}
++    </update>
++    <update id="agree">
++        update cleave set sid = 3 where clid=#{clid}
++    </update>
++    <update id="disagree">
++        update cleave set sid = 4,typeid = 2 where clid=#{clid}
++    </update>
++    <update id="logoutLeave">
++        update cleave set sid = 5,typeid = 2 where clid=#{clid}
++    </update>
++    <update id="updRefuseReason">
++        update cleave set refusereson=#{refusereson},sid = 4,typeid = 2 where clid=#{clid}
++    </update>
++    <delete id="deleteLeave">
++        delete from cleave where clid=#{clid}
++    </delete>
++    <select id="getAllCleave" resultType="java.util.HashMap">
++        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
++               p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
++               left join leavetype l on cl.lid = l.lid
++               left join state s on cl.sid = s.sid
++               left join children c on cl.cid = c.cid
++               left join class cla on cl.cno = cla.cno
++               left join parents p on cl.pid = p.pid
++                where cl.cid = #{cid}
++            <if test="uname != '' and uname != null">
++                and c.cname like '%' #{uname} '%'
++            </if>
++            <if test="statrt != '' and statrt != null">
++                and statrt = #{statrt}
++            </if>
++        order by clid desc
++    </select>
++    <select id="selectState" resultType="integer">
++        select sid from cleave where clid=#{clid}
++    </select>
++    <select id="getCleave" resultType="hashmap">
++        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
++        p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
++        left join leavetype l on cl.lid = l.lid
++        left join state s on cl.sid = s.sid
++        left join children c on cl.cid = c.cid
++        left join class cla on cl.cno = cla.cno
++        left join parents p on cl.pid = p.pid
++        where cl.cno = #{cno} and (cl.sid = 2 or cl.sid = 3 or cl.sid = 4)
++            <if test="cname != '' and cname != null">
++              and  c.cname like '%' #{cname} '%'
++            </if>
++            <if test="statrt != '' and statrt != null">
++                and statrt = #{statrt}
++            </if>
++        order by clid desc
++    </select>
++    <select id="selectType" resultType="integer">
++        select typeid from cleave where cid=#{cid}
++    </select>
++    <select id="getAdminCleave" resultType="hashmap">
++        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
++        p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
++        left join leavetype l on cl.lid = l.lid
++        left join state s on cl.sid = s.sid
++        left join children c on cl.cid = c.cid
++        left join class cla on cl.cno = cla.cno
++        left join parents p on cl.pid = p.pid
++        where (cl.sid = 2 or cl.sid = 3 or cl.sid = 4)
++        <if test="cno != '' and cname != null">
++            and cl.cno = #{cno}
++        </if>
++        <if test="cname != '' and cname != null">
++            and  c.cname like '%' #{cname} '%'
++        </if>
++        order by clid desc
++    </select>
++</mapper>
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1674817781641)
++++ b/.idea/.gitignore	(date 1674817781641)
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1674827644611)
++++ b/.idea/jarRepositories.xml	(date 1674827644611)
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Central Repository" />
++      <option name="url" value="https://repo.maven.apache.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Central Repository" />
++      <option name="url" value="http://maven.aliyun.com/nexus/content/repositories/central/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/dao/ICleaveDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/ICleaveDao.java b/src/main/java/com/jxd/leave/dao/ICleaveDao.java
+new file mode 100644
+--- /dev/null	(date 1675479012280)
++++ b/src/main/java/com/jxd/leave/dao/ICleaveDao.java	(date 1675479012280)
+@@ -0,0 +1,34 @@
++package com.jxd.leave.dao;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.jxd.leave.model.Cleave;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++
++public interface ICleaveDao {
++    IPage<Cleave> getAllCleave(IPage<Cleave> page, @Param("uname") String uname,@Param("statrt") String statrt,@Param("cid") Integer cid);
++
++    IPage<Cleave> getCleave(IPage<Cleave> page, @Param("cno") Integer cno,@Param("statrt") String statrt,@Param("cname") String cname);
++
++    IPage<Cleave> getAdminCleave(IPage<Cleave> page, @Param("cno") Integer cno,@Param("cname") String cname);
++
++    boolean addLeave(Cleave cleave);
++
++    boolean updLeave(Cleave cleave);
++
++    boolean submit(Cleave cleave);
++
++    Integer selectState(Cleave cleave);
++    List<Integer> selectType(Cleave cleave);
++
++    boolean deleteLeave(Cleave cleave);
++
++    boolean agree(Cleave cleave);
++
++    boolean disagree(Cleave cleave);
++
++    boolean logoutLeave(Cleave cleave);
++
++    boolean updRefuseReason(Cleave cleave);
++}
+Index: src/main/java/com/jxd/leave/service/impl/CleaveServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/CleaveServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/CleaveServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1675479012222)
++++ b/src/main/java/com/jxd/leave/service/impl/CleaveServiceImpl.java	(date 1675479012222)
+@@ -0,0 +1,163 @@
++package com.jxd.leave.service.impl;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.dao.IChildrenDao;
++import com.jxd.leave.dao.ICleaveDao;
++import com.jxd.leave.dao.ITeacherDao;
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Class;
++import com.jxd.leave.model.Cleave;
++import com.jxd.leave.model.Teacher;
++import com.jxd.leave.service.ICleaveService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName CleaveServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/31
++ * @Version 1.0
++ */
++@Service
++public class CleaveServiceImpl implements ICleaveService {
++    @Autowired
++    private ICleaveDao cleaveDao;
++    @Autowired
++    private ITeacherDao teacherDao;
++    @Autowired
++    private IChildrenDao childrenDao;
++    @Override
++    public Map<String, Object> getAllCleave(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String uname = map.get("uname");
++        String statrt = map.get("statrt");
++        Children children = new Children();
++        children.setCname(uname);
++        Integer cid = childrenDao.selecrCid(children);
++        Map<String,Object> map1 = new HashMap(5);
++        if (page != null && limit != null){
++            IPage<Cleave> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Cleave> pageRes = cleaveDao.getAllCleave(page1,uname,statrt,cid);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public Map<String, Object> getCleave(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String tname = map.get("tname");
++        String cname = map.get("cname");
++        String statrt = map.get("statrt");
++        Integer cno = teacherDao.selectCno(tname);
++        Map<String,Object> map1 = new HashMap(5);
++        if (page != null && limit != null){
++            IPage<Cleave> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Cleave> pageRes = cleaveDao.getCleave(page1,cno,statrt,cname);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public Map<String, Object> getAdminCleave(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String cname = map.get("cname");
++        String cnos = map.get("cno");
++        int cno = 0;
++        if (!"".equals(cnos)){
++            cno = Integer.parseInt(cnos);
++        }
++
++        Map<String,Object> map1 = new HashMap(4);
++        if (page != null && limit != null){
++            IPage<Cleave> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Cleave> pageRes = cleaveDao.getAdminCleave(page1,cno,cname);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public boolean addLeave(Cleave cleave) {
++        return cleaveDao.addLeave(cleave);
++    }
++
++    @Override
++    public boolean updLeave(Cleave cleave) {
++        return cleaveDao.updLeave(cleave);
++    }
++
++    @Override
++    public boolean submit(Cleave cleave) {
++        return cleaveDao.submit(cleave);
++    }
++
++    @Override
++    public Integer selectState(Cleave cleave) {
++        return cleaveDao.selectState(cleave);
++    }
++
++    @Override
++    public boolean deleteLeave(Cleave cleave) {
++        return cleaveDao.deleteLeave(cleave);
++    }
++
++    @Override
++    public List<Integer> selectType(Cleave cleave) {
++        return cleaveDao.selectType(cleave);
++    }
++
++    @Override
++    public boolean agree(Cleave cleave) {
++        return cleaveDao.agree(cleave);
++    }
++
++    @Override
++    public boolean disagree(Cleave cleave) {
++        return cleaveDao.disagree(cleave);
++    }
++
++    @Override
++    public boolean logoutLeave(Cleave cleave) {
++        return cleaveDao.logoutLeave(cleave);
++    }
++
++    @Override
++    public boolean updRefuseReason(Cleave cleave) {
++        return cleaveDao.updRefuseReason(cleave);
++    }
++}
+Index: src/main/java/com/jxd/leave/service/ICleaveService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/ICleaveService.java b/src/main/java/com/jxd/leave/service/ICleaveService.java
+new file mode 100644
+--- /dev/null	(date 1675479012179)
++++ b/src/main/java/com/jxd/leave/service/ICleaveService.java	(date 1675479012179)
+@@ -0,0 +1,32 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Cleave;
++
++import java.util.List;
++import java.util.Map;
++
++public interface ICleaveService {
++
++    Map<String, Object> getAllCleave(Map<String,String> map);
++
++    Map<String, Object> getCleave(Map<String,String> map);
++
++    Map<String, Object> getAdminCleave(Map<String,String> map);
++
++
++    boolean addLeave(Cleave cleave);
++    boolean updLeave(Cleave cleave);
++    boolean submit(Cleave cleave);
++
++    Integer selectState(Cleave cleave);
++
++    boolean deleteLeave(Cleave cleave);
++
++    List<Integer> selectType(Cleave cleave);
++    boolean agree(Cleave cleave);
++    boolean disagree(Cleave cleave);
++
++    boolean logoutLeave(Cleave cleave);
++
++    boolean updRefuseReason(Cleave cleave);
++}
+Index: src/main/java/com/jxd/leave/UserApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/UserApplication.java b/src/main/java/com/jxd/leave/UserApplication.java
+new file mode 100644
+--- /dev/null	(date 1674826537897)
++++ b/src/main/java/com/jxd/leave/UserApplication.java	(date 1674826537897)
+@@ -0,0 +1,20 @@
++package com.jxd.leave;
++
++import org.mybatis.spring.annotation.MapperScan;
++import org.springframework.boot.SpringApplication;
++import org.springframework.boot.autoconfigure.SpringBootApplication;
++
++/**
++ * @ClassName UserApplication
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/27
++ * @Version 1.0
++ */
++@SpringBootApplication
++@MapperScan("com.jxd.leave.dao")
++public class UserApplication {
++    public static void main(String[] args) {
++        SpringApplication.run(UserApplication.class);
++    }
++}
+Index: .idea/encodings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+new file mode 100644
+--- /dev/null	(date 1674817781448)
++++ b/.idea/encodings.xml	(date 1674817781448)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Encoding">
++    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
++  </component>
++</project>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/model/Cleave.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Cleave.java b/src/main/java/com/jxd/leave/model/Cleave.java
+new file mode 100644
+--- /dev/null	(date 1675479012137)
++++ b/src/main/java/com/jxd/leave/model/Cleave.java	(date 1675479012137)
+@@ -0,0 +1,154 @@
++package com.jxd.leave.model;
++
++/**
++ * @ClassName Cleave
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/31
++ * @Version 1.0
++ */
++public class Cleave {
++    private Integer clid;
++    private String statrt;
++    private String end;
++    private Integer lid;
++    private String reason;
++    private Integer sid;
++    private Integer cid;
++    private Integer pid;
++    private Integer cno;
++    private Integer day;
++    private Integer typeid;
++    private String cname;
++
++    private String refusereson;
++
++    public Cleave() {
++    }
++
++
++
++    public Cleave(Integer clid, String statrt, String end, Integer lid, String reason, Integer sid, Integer cid, Integer pid, Integer cno, Integer day, Integer typeid, String cname, String refusereson) {
++        this.clid = clid;
++        this.statrt = statrt;
++        this.end = end;
++        this.lid = lid;
++        this.reason = reason;
++        this.sid = sid;
++        this.cid = cid;
++        this.pid = pid;
++        this.cno = cno;
++        this.day = day;
++        this.typeid = typeid;
++        this.cname = cname;
++        this.refusereson = refusereson;
++    }
++
++    public Integer getClid() {
++        return clid;
++    }
++
++    public void setClid(Integer clid) {
++        this.clid = clid;
++    }
++
++    public void setStatrt(String statrt) {
++        this.statrt = statrt;
++    }
++
++    public String getStatrt() {
++        return statrt;
++    }
++
++    public void setStart(String start) {
++        this.statrt = start;
++    }
++
++    public String getEnd() {
++        return end;
++    }
++
++    public void setEnd(String end) {
++        this.end = end;
++    }
++
++    public Integer getLid() {
++        return lid;
++    }
++
++    public void setLid(Integer lid) {
++        this.lid = lid;
++    }
++
++    public String getReason() {
++        return reason;
++    }
++
++    public void setReason(String reason) {
++        this.reason = reason;
++    }
++
++    public Integer getSid() {
++        return sid;
++    }
++
++    public void setSid(Integer sid) {
++        this.sid = sid;
++    }
++
++    public Integer getCid() {
++        return cid;
++    }
++
++    public void setCid(Integer cid) {
++        this.cid = cid;
++    }
++
++    public Integer getPid() {
++        return pid;
++    }
++
++    public void setPid(Integer pid) {
++        this.pid = pid;
++    }
++
++    public Integer getCno() {
++        return cno;
++    }
++
++    public void setCno(Integer cno) {
++        this.cno = cno;
++    }
++
++    public Integer getDay() {
++        return day;
++    }
++
++    public void setDay(Integer day) {
++        this.day = day;
++    }
++
++    public Integer getTypeid() {
++        return typeid;
++    }
++
++    public void setTypeid(Integer typeid) {
++        this.typeid = typeid;
++    }
++
++    public String getCname() {
++        return cname;
++    }
++
++    public void setCname(String cname) {
++        this.cname = cname;
++    }
++
++    public String getRefusereson() {
++        return refusereson;
++    }
++
++    public void setRefusereson(String refusereson) {
++        this.refusereson = refusereson;
++    }
++}
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	(date 1675664312400)
++++ b/.idea/compiler.xml	(date 1675664312400)
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <annotationProcessing>
++      <profile name="Maven default annotation processors profile" enabled="true">
++        <sourceOutputDir name="target/generated-sources/annotations" />
++        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
++        <outputRelativeToContentRoot value="true" />
++        <module name="leave" />
++      </profile>
++    </annotationProcessing>
++  </component>
++  <component name="JavacSettings">
++    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
++      <module name="leave" options="-parameters" />
++    </option>
++  </component>
++</project>
+\ No newline at end of file
+Index: target/classes/com/jxd/leave/dao/mapping/AdminMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/AdminMapper.xml b/target/classes/com/jxd/leave/dao/mapping/AdminMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675065334517)
++++ b/target/classes/com/jxd/leave/dao/mapping/AdminMapper.xml	(date 1675065334517)
+@@ -0,0 +1,15 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IAdminDao">
++    <update id="updAdmin">
++        update admin set aname = #{aname},ajob = #{ajob} where aid=#{aid}
++    </update>
++    <update id="updPassword">
++        update admin set pwd = #{newPassword} where aid=#{id}
++    </update>
++
++
++    <select id="selectAdmin" resultType="admin">
++        select aid,aname,ajob,pwd from admin where aname = #{aname}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/controller/CleaveController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/CleaveController.java b/src/main/java/com/jxd/leave/controller/CleaveController.java
+new file mode 100644
+--- /dev/null	(date 1675481983255)
++++ b/src/main/java/com/jxd/leave/controller/CleaveController.java	(date 1675481983255)
+@@ -0,0 +1,201 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Cleave;
++import com.jxd.leave.service.IAdminService;
++import com.jxd.leave.service.IChildrenService;
++import com.jxd.leave.service.ICleaveService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName CleaveController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/31
++ * @Version 1.0
++ */
++@RestController
++public class CleaveController {
++    @Autowired
++    private ICleaveService cleaveService;
++
++    @Autowired
++    private IChildrenService childrenService;
++
++    @RequestMapping("/getAllCleave")
++    public Map<String, Object> getAllCleave(@RequestBody Map<String,String> map){
++        return cleaveService.getAllCleave(map);
++    }
++
++    @RequestMapping("/getCleave")
++    public Map<String, Object> getCleave(@RequestBody Map<String,String> map){
++        return cleaveService.getCleave(map);
++    }
++
++    @RequestMapping("/getAdminCleave")
++    public Map<String, Object> getAdminCleave(@RequestBody Map<String,String> map){
++        return cleaveService.getAdminCleave(map);
++    }
++
++    @RequestMapping("/addCleave")
++    public String addCleave(@RequestBody Cleave cleave){
++
++        String cname = cleave.getCname();
++        Children children = new Children();
++        children.setCname(cname);
++        int cid = childrenService.selecrCid(children);
++        int cno = childrenService.selectCno(cname);
++
++        cleave.setCid(cid);
++        cleave.setCno(cno);
++
++        List<Integer> type = cleaveService.selectType(cleave);
++        for (int i = 0; i < type.size(); i++) {
++            if (type.get(i) == 1){
++                return "error2";
++            }
++        }
++        boolean flag = cleaveService.addLeave(cleave);
++
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updCleave")
++    public String updCleave(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++
++        if (state == 2 || state == 3 || state == 4 || state == 5){
++            return "error1";
++        }
++
++
++        boolean flag = cleaveService.updLeave(cleave);
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/submitLeave")
++    public String submitLeave(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++
++        if (state == 2 || state == 3 || state == 4|| state == 5){
++            return "error1";
++        }
++        boolean flag = cleaveService.submit(cleave);
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/deleteLeave")
++    public String deleteLeave(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++
++        if (state == 2 || state == 3 || state == 4 || state == 5){
++            return "error1";
++        }
++
++        boolean isSuccess = cleaveService.deleteLeave(cleave);
++        if (isSuccess){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/agree")
++    public String agree(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++        if (state == 2){
++            boolean flag = cleaveService.agree(cleave);
++            if (flag){
++                return "success";
++            }else {
++                return "error";
++            }
++        }else {
++            return "error1";
++        }
++    }
++
++    @RequestMapping("/disagree")
++    public String disagree(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++        if (state == 2){
++            return "success";
++        }else {
++            return "error";
++        }
++
++    }
++
++    @RequestMapping("/logoutLeave")
++    public String logoutLeave(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++        if (state == 3){
++            boolean flag = cleaveService.logoutLeave(cleave);
++            if (flag){
++                return "success";
++            }else {
++                return "error";
++            }
++        }else {
++            return "error1";
++        }
++    }
++
++    @RequestMapping("/updRefuseReason")
++    public String updRefuseReason(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++        if (state == 2){
++            boolean flag = cleaveService.updRefuseReason(cleave);
++            if (flag){
++                return "success";
++            }else {
++                return "error";
++            }
++        }else {
++            return "error1";
++        }
++    }
++
++    @RequestMapping("/add")
++    public String add(@RequestBody Cleave cleave){
++        Children children = new Children();
++        children.setCname(cleave.getCname());
++        Integer cid = childrenService.selecrCid(children);
++        cleave.setCid(cid);
++        List<Integer> type = cleaveService.selectType(cleave);
++        for (int i = 0; i < type.size(); i++) {
++            if (type.get(i) == 1){
++                return "error";
++            }
++        }
++        return "success";
++    }
++
++    @RequestMapping("/upd")
++    public String upd(@RequestBody Cleave cleave){
++        Integer state = cleaveService.selectState(cleave);
++        if (state == 2 || state == 3 || state == 4 || state == 5){
++            return "error";
++        }else {
++            return "success";
++        }
++    }
++}
+Index: src/main/java/com/jxd/leave/service/impl/ParentsServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/ParentsServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/ParentsServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1675230076679)
++++ b/src/main/java/com/jxd/leave/service/impl/ParentsServiceImpl.java	(date 1675230076679)
+@@ -0,0 +1,78 @@
++package com.jxd.leave.service.impl;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.dao.IChildrenDao;
++import com.jxd.leave.dao.IParentsDao;
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Parents;
++import com.jxd.leave.service.IParentsService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName ParentsServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/2/1
++ * @Version 1.0
++ */
++@Service
++public class ParentsServiceImpl implements IParentsService {
++    @Autowired
++    private IParentsDao parentsDao;
++    @Autowired
++    private IChildrenDao childrenDao;
++
++    @Override
++    public Map<String, Object> getAllParents(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String pname = map.get("pname");
++        String relationship = map.get("relationship");
++        String cname = map.get("cname");
++        Children children = new Children();
++        children.setCname(cname);
++        int cid = childrenDao.selecrCid(children);
++
++        Map<String,Object> map1 = new HashMap(5);
++        if (page != null && limit != null){
++            IPage<Parents> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Parents> pageRes = parentsDao.getAllParents(page1,pname,relationship,cid);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public boolean addParents(Parents parents) {
++        return parentsDao.addParents(parents);
++    }
++
++    @Override
++    public boolean updParents(Parents parents) {
++        return parentsDao.updParents(parents);
++    }
++
++    @Override
++    public boolean delParents(List<Integer> pids) {
++        return parentsDao.delParents(pids);
++    }
++
++    @Override
++    public List<Parents> getParents(Integer cid) {
++        return parentsDao.getParents(cid);
++    }
++}
+Index: src/main/java/com/jxd/leave/service/IParentsService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/IParentsService.java b/src/main/java/com/jxd/leave/service/IParentsService.java
+new file mode 100644
+--- /dev/null	(date 1675230076635)
++++ b/src/main/java/com/jxd/leave/service/IParentsService.java	(date 1675230076635)
+@@ -0,0 +1,18 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Parents;
++
++import java.util.List;
++import java.util.Map;
++
++public interface IParentsService {
++    Map<String, Object> getAllParents(Map<String,String> map);
++
++    boolean addParents(Parents parents);
++
++    boolean updParents(Parents parents);
++    boolean delParents(List<Integer> pids);
++    List<Parents> getParents(Integer cid);
++
++
++}
+Index: src/main/java/com/jxd/leave/controller/ParentsController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/ParentsController.java b/src/main/java/com/jxd/leave/controller/ParentsController.java
+new file mode 100644
+--- /dev/null	(date 1675232030258)
++++ b/src/main/java/com/jxd/leave/controller/ParentsController.java	(date 1675232030258)
+@@ -0,0 +1,80 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Parents;
++import com.jxd.leave.service.IChildrenService;
++import com.jxd.leave.service.IParentsService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName ParentsController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/2/1
++ * @Version 1.0
++ */
++@RestController
++public class ParentsController {
++    @Autowired
++    private IParentsService parentsService;
++    @Autowired
++    private IChildrenService childrenService;
++
++    @RequestMapping("/getAllParents")
++    public Map<String,Object> getAllParents(@RequestBody Map<String,String> map){
++        return parentsService.getAllParents(map);
++    }
++
++    @RequestMapping("/addParents")
++    public String addParents(@RequestBody Parents parents){
++        Children children = new Children();
++        children.setCname(parents.getCname());
++        int cid = childrenService.selecrCid(children);
++        parents.setCid(cid);
++        boolean flag = parentsService.addParents(parents);
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updParents")
++    public String updParents(@RequestBody Parents parents){
++        Children children = new Children();
++        children.setCname(parents.getCname());
++        int cid = childrenService.selecrCid(children);
++        parents.setCid(cid);
++        boolean flag = parentsService.updParents(parents);
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/delParents")
++    public String delParents(@RequestBody List<Integer> pids){
++        boolean flag = parentsService.delParents(pids);
++        if (flag){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/getParents")
++    public List<Parents> getParents(@RequestBody Map<String,String> map){
++        Children children = new Children();
++        children.setCname(map.get("uname"));
++        int cid = childrenService.selecrCid(children);
++        List<Parents> list = parentsService.getParents(cid);
++        return list;
++    }
++}
+Index: src/main/java/com/jxd/leave/model/Parents.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Parents.java b/src/main/java/com/jxd/leave/model/Parents.java
+new file mode 100644
+--- /dev/null	(date 1675220450407)
++++ b/src/main/java/com/jxd/leave/model/Parents.java	(date 1675220450407)
+@@ -0,0 +1,86 @@
++package com.jxd.leave.model;
++
++/**
++ * @ClassName Parents
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/2/1
++ * @Version 1.0
++ */
++public class Parents {
++    private Integer pid;
++    private String pname;
++    private String relationship;
++    private Integer cid;
++    private String phone;
++
++    private String cname;
++
++    public Parents(Integer pid, String pname, String relationship, Integer cid, String phone, String cname) {
++        this.pid = pid;
++        this.pname = pname;
++        this.relationship = relationship;
++        this.cid = cid;
++        this.phone = phone;
++        this.cname = cname;
++    }
++
++    public String getCname() {
++        return cname;
++    }
++
++    public void setCname(String cname) {
++        this.cname = cname;
++    }
++
++    public Parents() {
++    }
++
++    public Parents(Integer pid, String pname, String relationship, Integer cid, String phone) {
++        this.pid = pid;
++        this.pname = pname;
++        this.relationship = relationship;
++        this.cid = cid;
++        this.phone = phone;
++    }
++
++    public Integer getPid() {
++        return pid;
++    }
++
++    public void setPid(Integer pid) {
++        this.pid = pid;
++    }
++
++    public String getPname() {
++        return pname;
++    }
++
++    public void setPname(String pname) {
++        this.pname = pname;
++    }
++
++    public String getRelationship() {
++        return relationship;
++    }
++
++    public void setRelationship(String relationship) {
++        this.relationship = relationship;
++    }
++
++    public Integer getCid() {
++        return cid;
++    }
++
++    public void setCid(Integer cid) {
++        this.cid = cid;
++    }
++
++    public String getPhone() {
++        return phone;
++    }
++
++    public void setPhone(String phone) {
++        this.phone = phone;
++    }
++}
+Index: target/classes/com/jxd/leave/dao/mapping/LeaveMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/LeaveMapper.xml b/target/classes/com/jxd/leave/dao/mapping/LeaveMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675150202369)
++++ b/target/classes/com/jxd/leave/dao/mapping/LeaveMapper.xml	(date 1675150202369)
+@@ -0,0 +1,31 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.ILeaveDao">
++    <insert id="addLeave">
++        insert into leavetype (lname)
++        values (#{lname})
++    </insert>
++    <update id="updateLeave">
++        update leavetype set lname=#{lname}
++        where lid=#{lid}
++    </update>
++    <delete id="delLeave">
++        delete from leavetype where lid in
++        <foreach collection="lids" item="lids" open="(" separator="," close=")">
++            #{lids}
++        </foreach>
++    </delete>
++
++    <select id="getAllLeave" resultType="java.util.HashMap">
++        select lid,lname from leavetype
++        <where>
++            <if test="lname != '' and lname != null">
++                lname like '%' #{lname} '%'
++            </if>
++        </where>
++        order by lid
++    </select>
++    <select id="getAllLeaveType" resultType="leave">
++        select lid,lname from leavetype
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/dao/mapping/ParentsMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/ParentsMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/ParentsMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675229841217)
++++ b/src/main/java/com/jxd/leave/dao/mapping/ParentsMapper.xml	(date 1675229841217)
+@@ -0,0 +1,29 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IParentsDao">
++    <insert id="addParents">
++        insert into parents (pname,relationship,cid,phone,cname) values (#{pname},#{relationship},#{cid},#{phone},#{cname})
++    </insert>
++    <update id="updParents">
++        update parents set pname=#{pname},relationship=#{relationship},cid=#{cid},phone=#{phone},cname=#{cname} where pid=#{pid}
++    </update>
++    <delete id="delParents">
++        delete from parents where pid in
++        <foreach collection="pids" item="pids" open="(" separator="," close=")">
++            #{pids}
++        </foreach>
++    </delete>
++
++    <select id="getAllParents" resultType="hashmap">
++        select pid,pname,relationship,cid,phone,cname from parents  where cid = #{cid}
++        <if test="pname != '' and pname != null">
++            and pname like '%' #{pname} '%'
++        </if>
++        <if test="relationship != '' and relationship != null">
++            and relationship like '%' #{relationship} '%'
++        </if>
++    </select>
++    <select id="getParents" resultType="parents">
++        select pid,relationship from parents where cid = #{cid}
++    </select>
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/dao/IParentsDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/IParentsDao.java b/src/main/java/com/jxd/leave/dao/IParentsDao.java
+new file mode 100644
+--- /dev/null	(date 1675229841195)
++++ b/src/main/java/com/jxd/leave/dao/IParentsDao.java	(date 1675229841195)
+@@ -0,0 +1,18 @@
++package com.jxd.leave.dao;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.jxd.leave.model.Children;
++import com.jxd.leave.model.Parents;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++
++public interface IParentsDao {
++    IPage<Parents> getAllParents(IPage<Parents> page, @Param("pname") String pname, @Param("relationship") String relationship,@Param("cid") Integer cid);
++
++    boolean addParents(Parents parents);
++    boolean updParents(Parents parents);
++    boolean delParents(List<Integer> pids);
++
++    List<Parents> getParents(Integer cid);
++}
+Index: target/classes/com/jxd/leave/dao/mapping/ClassMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/ClassMapper.xml b/target/classes/com/jxd/leave/dao/mapping/ClassMapper.xml
+new file mode 100644
+--- /dev/null	(date 1674978208791)
++++ b/target/classes/com/jxd/leave/dao/mapping/ClassMapper.xml	(date 1674978208791)
+@@ -0,0 +1,32 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IClassDao">
++    <insert id="addClass">
++        insert into class (clname)
++        values (#{clname})
++    </insert>
++    <update id="updateClass">
++        update class set clname=#{clname}
++        where cno=#{cno}
++    </update>
++    <delete id="delClass">
++        delete from class where cno in
++        <foreach collection="cnos" item="cnos" open="(" separator="," close=")">
++            #{cnos}
++        </foreach>
++    </delete>
++    <select id="getAllClass" resultType="class">
++        select cno,clname from class
++    </select>
++    <select id="getAllCla" resultType="java.util.HashMap">
++        select cno,clname from class
++        <where>
++            <if test="clname != '' and clname != null">
++                clname like '%' #{clname} '%'
++            </if>
++        </where>
++        order by cno
++    </select>
++
++
++</mapper>
+\ No newline at end of file
+Index: target/classes/com/jxd/leave/dao/mapping/UserMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/target/classes/com/jxd/leave/dao/mapping/UserMapper.xml b/target/classes/com/jxd/leave/dao/mapping/UserMapper.xml
+new file mode 100644
+--- /dev/null	(date 1675406830382)
++++ b/target/classes/com/jxd/leave/dao/mapping/UserMapper.xml	(date 1675406830382)
+@@ -0,0 +1,36 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IUserDao">
++    <insert id="addUser">
++        insert into user (uname,pwd,role,peopleid)
++        values (#{uname},'888888',#{role},#{peopleid})
++    </insert>
++    <update id="updPassword">
++        update user set pwd=#{newPassword} where peopleid=#{id} and role = #{role}
++    </update>
++    <update id="updateUser">
++        update user set uname = #{uname} where role = #{role} and peopleid = #{peopleid}
++    </update>
++    <update id="resetPassword">
++        update user set pwd=888888 where peopleid in
++        <foreach collection="uids" item="uids" open="(" separator="," close=")">
++            #{uids}
++        </foreach>
++        and role = #{role}
++    </update>
++    <delete id="delUser">
++        delete from user where peopleid in
++        <foreach collection="uids" item="uids" open="(" separator="," close=")">
++            #{uids}
++        </foreach>
++        and role = #{role}
++    </delete>
++
++    <select id="login" resultType="boolean">
++        select count(uid) from user where uname = #{uname} and pwd = #{pwd}
++    </select>
++    <select id="selectRole" resultType="int">
++        select role from user where uname = #{uname} and pwd = #{pwd}
++    </select>
++
++</mapper>
+\ No newline at end of file
+Index: src/main/java/com/jxd/leave/service/IClassService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/IClassService.java b/src/main/java/com/jxd/leave/service/IClassService.java
+new file mode 100644
+--- /dev/null	(date 1674976514300)
++++ b/src/main/java/com/jxd/leave/service/IClassService.java	(date 1674976514300)
+@@ -0,0 +1,19 @@
++package com.jxd.leave.service;
++
++import com.jxd.leave.model.Class;
++
++import java.util.List;
++import java.util.Map;
++
++public interface IClassService {
++    List<Class> getAllClass();
++
++    Map<String, Object> getAllCla(Map<String,String> map);
++
++    boolean addClass(Class cla);
++
++    boolean updateClass(Class cla);
++
++    boolean delClass(List<Integer> cnos);
++
++}
+Index: src/main/java/com/jxd/leave/controller/ClassController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/controller/ClassController.java b/src/main/java/com/jxd/leave/controller/ClassController.java
+new file mode 100644
+--- /dev/null	(date 1674982222276)
++++ b/src/main/java/com/jxd/leave/controller/ClassController.java	(date 1674982222276)
+@@ -0,0 +1,63 @@
++package com.jxd.leave.controller;
++
++import com.jxd.leave.model.Class;
++import com.jxd.leave.service.IClassService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName ClassController
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/28
++ * @Version 1.0
++ */
++@RestController
++public class ClassController {
++    @Autowired
++    private IClassService classService;
++
++    @RequestMapping("/geAllClass")
++    public List<Class> getAllClass(){
++        List<Class> list = classService.getAllClass();
++        return list;
++    }
++
++    @RequestMapping("/getAllCla")
++    public Map<String, Object> getClass(@RequestBody Map<String,String> map){
++        return classService.getAllCla(map);
++    }
++
++    @RequestMapping("/addClass")
++    public String addClass(@RequestBody Class cla){
++        if (classService.addClass(cla)){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/updateClass")
++    public String updateClass(@RequestBody Class cla){
++        if (classService.updateClass(cla)){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++    @RequestMapping("/delClass")
++    public String delClass(@RequestBody List<Integer> cnos){
++        if (classService.delClass(cnos)){
++            return "success";
++        }else {
++            return "error";
++        }
++    }
++
++}
+Index: src/main/java/com/jxd/leave/service/impl/ClassServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/service/impl/ClassServiceImpl.java b/src/main/java/com/jxd/leave/service/impl/ClassServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1674978089265)
++++ b/src/main/java/com/jxd/leave/service/impl/ClassServiceImpl.java	(date 1674978089265)
+@@ -0,0 +1,70 @@
++package com.jxd.leave.service.impl;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
++import com.jxd.leave.dao.IClassDao;
++import com.jxd.leave.model.Class;
++import com.jxd.leave.model.Teacher;
++import com.jxd.leave.service.IClassService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Service;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * @ClassName ClassServiceImpl
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/28
++ * @Version 1.0
++ */
++@Service
++public class ClassServiceImpl implements IClassService {
++    @Autowired
++    private IClassDao classDao;
++
++    @Override
++    public List<Class> getAllClass() {
++        return classDao.getAllClass();
++    }
++
++    @Override
++    public Map<String, Object> getAllCla(Map<String, String> map) {
++        String page = map.get("page");
++        String limit = map.get("limit");
++        String clname = map.get("clname");
++
++        Map<String,Object> map1 = new HashMap(3);
++        if (page != null && limit != null){
++            IPage<Class> page1 = new Page(Integer.parseInt(page),Integer.parseInt(limit));
++            IPage<Class> pageRes = classDao.getAllCla(page1,clname);
++            map1.put("count",pageRes.getTotal());
++            map1.put("data",pageRes.getRecords());
++            map1.put("code",0);
++            return map1;
++        }else {
++            map1.put("data",(Object)null);
++            map1.put("code","500");
++            map1.put("msg","参数不符");
++            map1.put("count",(Object)null);
++            return map1;
++        }
++    }
++
++    @Override
++    public boolean addClass(Class cla) {
++        return classDao.addClass(cla);
++    }
++
++    @Override
++    public boolean updateClass(Class cla) {
++        return classDao.updateClass(cla);
++    }
++
++    @Override
++    public boolean delClass(List<Integer> cnos) {
++        return classDao.delClass(cnos);
++    }
++}
+Index: src/main/java/com/jxd/leave/dao/IClassDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/IClassDao.java b/src/main/java/com/jxd/leave/dao/IClassDao.java
+new file mode 100644
+--- /dev/null	(date 1675134990529)
++++ b/src/main/java/com/jxd/leave/dao/IClassDao.java	(date 1675134990529)
+@@ -0,0 +1,20 @@
++package com.jxd.leave.dao;
++
++import com.baomidou.mybatisplus.core.metadata.IPage;
++import com.jxd.leave.model.Class;
++import org.apache.ibatis.annotations.Param;
++
++import java.util.List;
++
++public interface IClassDao {
++
++    List<Class> getAllClass();
++
++    IPage<Class> getAllCla(IPage<Class> page, @Param("clname") String clname);
++
++    boolean addClass(Class cla);
++
++    boolean updateClass(Class cla);
++
++    boolean delClass(List<Integer> cnos);
++}
+Index: src/main/java/com/jxd/leave/model/Class.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/model/Class.java b/src/main/java/com/jxd/leave/model/Class.java
+new file mode 100644
+--- /dev/null	(date 1674895370293)
++++ b/src/main/java/com/jxd/leave/model/Class.java	(date 1674895370293)
+@@ -0,0 +1,39 @@
++package com.jxd.leave.model;
++
++import com.jxd.leave.dao.IClassDao;
++
++/**
++ * @ClassName Class
++ * @Description TODO
++ * @Author fengyuhao
++ * @Date 2023/1/28
++ * @Version 1.0
++ */
++public class Class {
++    private Integer cno;
++    private String clname;
++
++    public Class() {
++    }
++
++    public Class(Integer cno, String clname) {
++        this.cno = cno;
++        this.clname = clname;
++    }
++
++    public Integer getCno() {
++        return cno;
++    }
++
++    public void setCno(Integer cno) {
++        this.cno = cno;
++    }
++
++    public String getClname() {
++        return clname;
++    }
++
++    public void setClname(String clname) {
++        this.clname = clname;
++    }
++}
+Index: src/main/java/com/jxd/leave/dao/mapping/ClassMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jxd/leave/dao/mapping/ClassMapper.xml b/src/main/java/com/jxd/leave/dao/mapping/ClassMapper.xml
+new file mode 100644
+--- /dev/null	(date 1674978208791)
++++ b/src/main/java/com/jxd/leave/dao/mapping/ClassMapper.xml	(date 1674978208791)
+@@ -0,0 +1,32 @@
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++<mapper namespace="com.jxd.leave.dao.IClassDao">
++    <insert id="addClass">
++        insert into class (clname)
++        values (#{clname})
++    </insert>
++    <update id="updateClass">
++        update class set clname=#{clname}
++        where cno=#{cno}
++    </update>
++    <delete id="delClass">
++        delete from class where cno in
++        <foreach collection="cnos" item="cnos" open="(" separator="," close=")">
++            #{cnos}
++        </foreach>
++    </delete>
++    <select id="getAllClass" resultType="class">
++        select cno,clname from class
++    </select>
++    <select id="getAllCla" resultType="java.util.HashMap">
++        select cno,clname from class
++        <where>
++            <if test="clname != '' and clname != null">
++                clname like '%' #{clname} '%'
++            </if>
++        </where>
++        order by cno
++    </select>
++
++
++</mapper>
+\ No newline at end of file
