@@ -1,0 +1,15 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.IAdminDao">
+    <update id="updAdmin">
+        update admin set aname = #{aname},ajob = #{ajob} where aid=#{aid}
+    </update>
+    <update id="updPassword">
+        update admin set pwd = #{newPassword} where aid=#{id}
+    </update>
+
+
+    <select id="selectAdmin" resultType="admin">
+        select aid,aname,ajob,pwd from admin where aname = #{aname}
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.IUserDao">
+    <insert id="addUser">
+        insert into user (uname,pwd,role,peopleid)
+        values (#{uname},'888888',#{role},#{peopleid})
+    </insert>
+    <update id="updPassword">
+        update user set pwd=#{newPassword} where peopleid=#{id} and role = #{role}
+    </update>
+    <update id="updateUser">
+        update user set uname = #{uname} where role = #{role} and peopleid = #{peopleid}
+    </update>
+    <update id="resetPassword">
+        update user set pwd=888888 where peopleid in
+        <foreach collection="uids" item="uids" open="(" separator="," close=")">
+            #{uids}
+        </foreach>
+        and role = #{role}
+    </update>
+    <delete id="delUser">
+        delete from user where peopleid in
+        <foreach collection="uids" item="uids" open="(" separator="," close=")">
+            #{uids}
+        </foreach>
+        and role = #{role}
+    </delete>
+
+    <select id="login" resultType="boolean">
+        select count(uid) from user where uname = #{uname} and pwd = #{pwd}
+    </select>
+    <select id="selectRole" resultType="int">
+        select role from user where uname = #{uname} and pwd = #{pwd}
+    </select>
+
+</mapper>

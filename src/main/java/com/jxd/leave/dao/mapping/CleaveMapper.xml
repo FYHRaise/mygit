@@ -1,0 +1,86 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.ICleaveDao">
+    <insert id="addLeave">
+        insert into cleave (statrt,end,reason,lid,sid,cid,pid,cno,day,typeid,cname)
+        values (#{statrt},#{end},#{reason},#{lid},1,#{cid},#{pid},#{cno},#{day},1,#{cname})
+    </insert>
+    <update id="updLeave">
+        update cleave set statrt=#{statrt},end=#{end},reason=#{reason},lid=#{lid},pid=#{pid},day=#{day} where clid=#{clid}
+    </update>
+    <update id="submit">
+        update cleave set sid = 2 where clid=#{clid}
+    </update>
+    <update id="agree">
+        update cleave set sid = 3 where clid=#{clid}
+    </update>
+    <update id="disagree">
+        update cleave set sid = 4,typeid = 2 where clid=#{clid}
+    </update>
+    <update id="logoutLeave">
+        update cleave set sid = 5,typeid = 2 where clid=#{clid}
+    </update>
+    <update id="updRefuseReason">
+        update cleave set refusereson=#{refusereson},sid = 4,typeid = 2 where clid=#{clid}
+    </update>
+    <delete id="deleteLeave">
+        delete from cleave where clid=#{clid}
+    </delete>
+    <select id="getAllCleave" resultType="java.util.HashMap">
+        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
+               p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
+               left join leavetype l on cl.lid = l.lid
+               left join state s on cl.sid = s.sid
+               left join children c on cl.cid = c.cid
+               left join class cla on cl.cno = cla.cno
+               left join parents p on cl.pid = p.pid
+                where cl.cid = #{cid}
+            <if test="uname != '' and uname != null">
+                and c.cname like '%' #{uname} '%'
+            </if>
+            <if test="statrt != '' and statrt != null">
+                and statrt = #{statrt}
+            </if>
+        order by clid desc
+    </select>
+    <select id="selectState" resultType="integer">
+        select sid from cleave where clid=#{clid}
+    </select>
+    <select id="getCleave" resultType="hashmap">
+        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
+        p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
+        left join leavetype l on cl.lid = l.lid
+        left join state s on cl.sid = s.sid
+        left join children c on cl.cid = c.cid
+        left join class cla on cl.cno = cla.cno
+        left join parents p on cl.pid = p.pid
+        where cl.cno = #{cno} and (cl.sid = 2 or cl.sid = 3 or cl.sid = 4)
+            <if test="cname != '' and cname != null">
+              and  c.cname like '%' #{cname} '%'
+            </if>
+            <if test="statrt != '' and statrt != null">
+                and statrt = #{statrt}
+            </if>
+        order by clid desc
+    </select>
+    <select id="selectType" resultType="integer">
+        select typeid from cleave where cid=#{cid}
+    </select>
+    <select id="getAdminCleave" resultType="hashmap">
+        select cl.clid,cl.statrt,cl.end,l.lid,l.lname,cl.reason,s.stare,c.cname,cl.pid,
+        p.pname,p.relationship,cla.clname,cl.day,cl.typeid,cl.refusereson from cleave cl
+        left join leavetype l on cl.lid = l.lid
+        left join state s on cl.sid = s.sid
+        left join children c on cl.cid = c.cid
+        left join class cla on cl.cno = cla.cno
+        left join parents p on cl.pid = p.pid
+        where (cl.sid = 2 or cl.sid = 3 or cl.sid = 4)
+        <if test="cno != '' and cname != null">
+            and cl.cno = #{cno}
+        </if>
+        <if test="cname != '' and cname != null">
+            and  c.cname like '%' #{cname} '%'
+        </if>
+        order by clid desc
+    </select>
+</mapper>

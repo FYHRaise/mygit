@@ -1,0 +1,32 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.IClassDao">
+    <insert id="addClass">
+        insert into class (clname)
+        values (#{clname})
+    </insert>
+    <update id="updateClass">
+        update class set clname=#{clname}
+        where cno=#{cno}
+    </update>
+    <delete id="delClass">
+        delete from class where cno in
+        <foreach collection="cnos" item="cnos" open="(" separator="," close=")">
+            #{cnos}
+        </foreach>
+    </delete>
+    <select id="getAllClass" resultType="class">
+        select cno,clname from class
+    </select>
+    <select id="getAllCla" resultType="java.util.HashMap">
+        select cno,clname from class
+        <where>
+            <if test="clname != '' and clname != null">
+                clname like '%' #{clname} '%'
+            </if>
+        </where>
+        order by cno
+    </select>
+
+
+</mapper>

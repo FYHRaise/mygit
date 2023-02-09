@@ -1,0 +1,51 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.ITeacherDao">
+    <insert id="addTeacher">
+        insert into teacher (tname,pwd,role,cno)
+        values (#{tname},'888888',3,#{cno})
+    </insert>
+    <update id="updateTeacher">
+        update teacher set tname=#{tname},cno=#{cno}
+        where tid=#{tid}
+    </update>
+    <update id="updTeacherPassword">
+        update teacher set pwd=#{newPassword} where tid=#{id}
+    </update>
+    <update id="resetTeacher">
+        update teacher set pwd=888888 where tid in
+        <foreach collection="tids" item="tids" open="(" separator="," close=")">
+        #{tids}
+        </foreach>
+    </update>
+    <delete id="delTeacher">
+        delete from teacher where tid in
+        <foreach collection="tids" item="tids" open="(" separator="," close=")">
+            #{tids}
+        </foreach>
+    </delete>
+
+
+    <select id="getAllTeacher" resultType="java.util.HashMap">
+        select t.tid,t.tname,t.cno,cl.clname from teacher t
+        left join class cl on t.cno = cl.cno
+        <where>
+            <if test="tname != '' and tname != null">
+                tname like '%' #{tname} '%'
+            </if>
+            <if test="cno != 0">
+                and t.cno = #{cno}
+            </if>
+        </where>
+        order by tid
+    </select>
+    <select id="selecrTid" resultType="integer">
+        select tid from teacher where tname=#{tname}
+    </select>
+    <select id="selectCno" resultType="integer">
+        select cno from teacher where tname like '%' #{tname} '%'
+    </select>
+    <select id="getTeacher" resultType="teacher">
+        select tid,tname,pwd,cno from teacher where tname=#{tname}
+    </select>
+</mapper>

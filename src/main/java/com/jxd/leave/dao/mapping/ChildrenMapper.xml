@@ -1,0 +1,72 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.IChildrenDao">
+    <insert id="addChildren">
+        insert into children (cname,pwd,role,sex,picture,birthday,cno)
+        values (#{cname},'888888',3,#{sex},#{picture},#{birthday},#{cno})
+    </insert>
+    <update id="addPicture">
+        update  children set picture=#{newName} where cid=#{cid}
+    </update>
+    <update id="updateChildren">
+        update children set cname=#{cname},sex=#{sex},picture=#{picture},birthday=#{birthday},cno=#{cno}
+        where cid=#{cid}
+    </update>
+    <update id="updChild">
+        update children set birthday=#{birthday} where cname=#{cname}
+    </update>
+    <update id="updChildPassword">
+        update children set pwd=#{newPassword} where cid=#{id}
+    </update>
+    <update id="resetPassword">
+        update children set pwd=888888 where cid in
+        <foreach collection="cids" item="cids" open="(" separator="," close=")">
+            #{cids}
+        </foreach>
+    </update>
+    <delete id="delChildren">
+        delete from children where cid in
+        <foreach collection="cids" item="cids" open="(" separator="," close=")">
+            #{cids}
+        </foreach>
+    </delete>
+
+
+    <select id="getAllChildren" resultType="java.util.HashMap">
+        select c.cid,c.cname,c.sex,c.picture,c.birthday,c.cno,cl.clname from children c
+        left join class cl on c.cno = cl.cno
+        <where>
+            <if test="cname != '' and cname != null">
+                cname like '%' #{cname} '%'
+            </if>
+            <if test="cno != 0">
+                and c.cno = #{cno}
+            </if>
+        </where>
+         order by cid
+    </select>
+    <select id="selectChildren" resultType="children">
+        select cname,sex,picture,birthday,cno from children where cid = cid
+    </select>
+    <select id="selecrCid" resultType="integer">
+        select cid from children where cname=#{cname}
+    </select>
+    <select id="selectCno" resultType="integer">
+        select cno from children where cname=#{cname}
+    </select>
+    <select id="getChildren" resultType="hashmap">
+        select c.cid,c.cname,c.sex,c.picture,c.birthday,c.cno,cl.clname from children c
+        left join class cl on c.cno = cl.cno where c.cno=#{cno}
+            <if test="cname != '' and cname != null">
+              and  cname like '%' #{cname} '%'
+            </if>
+        order by cid
+    </select>
+    <select id="getChild" resultType="children">
+        select cid,cname,pwd,birthday,sex,c.cno,cl.clname from children c
+        left join class cl on c.cno=cl.cno where c.cname=#{cname}
+    </select>
+    <select id="selectImg" resultType="string">
+        select picture from children where cid=#{cid}
+    </select>
+</mapper>

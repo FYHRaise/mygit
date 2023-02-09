@@ -1,0 +1,29 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.IParentsDao">
+    <insert id="addParents">
+        insert into parents (pname,relationship,cid,phone,cname) values (#{pname},#{relationship},#{cid},#{phone},#{cname})
+    </insert>
+    <update id="updParents">
+        update parents set pname=#{pname},relationship=#{relationship},cid=#{cid},phone=#{phone},cname=#{cname} where pid=#{pid}
+    </update>
+    <delete id="delParents">
+        delete from parents where pid in
+        <foreach collection="pids" item="pids" open="(" separator="," close=")">
+            #{pids}
+        </foreach>
+    </delete>
+
+    <select id="getAllParents" resultType="hashmap">
+        select pid,pname,relationship,cid,phone,cname from parents  where cid = #{cid}
+        <if test="pname != '' and pname != null">
+            and pname like '%' #{pname} '%'
+        </if>
+        <if test="relationship != '' and relationship != null">
+            and relationship like '%' #{relationship} '%'
+        </if>
+    </select>
+    <select id="getParents" resultType="parents">
+        select pid,relationship from parents where cid = #{cid}
+    </select>
+</mapper>

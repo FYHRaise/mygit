@@ -1,0 +1,31 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxd.leave.dao.ILeaveDao">
+    <insert id="addLeave">
+        insert into leavetype (lname)
+        values (#{lname})
+    </insert>
+    <update id="updateLeave">
+        update leavetype set lname=#{lname}
+        where lid=#{lid}
+    </update>
+    <delete id="delLeave">
+        delete from leavetype where lid in
+        <foreach collection="lids" item="lids" open="(" separator="," close=")">
+            #{lids}
+        </foreach>
+    </delete>
+
+    <select id="getAllLeave" resultType="java.util.HashMap">
+        select lid,lname from leavetype
+        <where>
+            <if test="lname != '' and lname != null">
+                lname like '%' #{lname} '%'
+            </if>
+        </where>
+        order by lid
+    </select>
+    <select id="getAllLeaveType" resultType="leave">
+        select lid,lname from leavetype
+    </select>
+</mapper>
